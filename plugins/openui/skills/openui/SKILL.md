@@ -1,11 +1,11 @@
 ---
-name: landing-page-design
-description: Use this skill when the task is to create a landing page, homepage, marketing page, hero page, design concept page, or multiple landing-page variants. First ensure repo-root AGENTS.md contains the landing-page workflow guidance, then create the repo-root design.md file with fully resolved inputs and a filled version of the master generation prompt for each variant, then implement the page or pages from design.md. Do not use this skill for unrelated coding tasks.
+name: openui
+description: Use OpenUI when the task is to create a landing page, homepage, marketing page, hero page, design concept page, or multiple landing-page variants. First ensure repo-root AGENTS.md contains the OpenUI workflow guidance, then create the repo-root design.md file with fully resolved inputs and a filled version of the master generation prompt for each variant, then implement the page or pages from design.md. Do not use this skill for unrelated coding tasks.
 ---
 
 # Purpose
 
-This skill converts a user request for a landing page into:
+OpenUI converts a user request for a landing page into:
 1. repo-root workflow guidance in `AGENTS.md` when the repository is missing it
 2. a required planning artifact at `/design.md`
 3. one or more implemented page outputs that follow `/design.md` exactly
@@ -35,10 +35,10 @@ Required `AGENTS.md` content for a new file:
 ```markdown
 # AGENTS.md
 
-<!-- landing-page-design-plugin:start -->
-## Mandatory landing-page workflow
+<!-- openui:start -->
+## Mandatory OpenUI workflow
 
-When a task asks for any of the following, use the `landing-page-design` skill before editing implementation files:
+When a task asks for any of the following, use the `openui` skill before editing implementation files:
 - landing page
 - homepage
 - marketing page
@@ -98,10 +98,10 @@ Final comparative gate:
 - For multiple React variants, create one component per variant with clear naming.
 
 Do not start implementation until `design.md` is complete.
-<!-- landing-page-design-plugin:end -->
+<!-- openui:end -->
 ```
 
-When appending to an existing `AGENTS.md`, append only the marked section from `<!-- landing-page-design-plugin:start -->` through `<!-- landing-page-design-plugin:end -->`, separated from existing content by one blank line.
+When appending to an existing `AGENTS.md`, append only the marked section from `<!-- openui:start -->` through `<!-- openui:end -->`, separated from existing content by one blank line.
 
 ## Phase 1 — Determine variant count
 
@@ -152,7 +152,7 @@ Before generating any page code, create or replace `/design.md`.
 
 Use this structure exactly:
 
-# Landing Page Design Plan
+# OpenUI Design Plan
 
 ## Variant 1
 

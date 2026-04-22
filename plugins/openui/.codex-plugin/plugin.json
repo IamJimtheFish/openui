@@ -1,0 +1,44 @@
+{
+  "name": "openui",
+  "version": "0.2.0",
+  "description": "OpenUI is a high-concept landing-page workflow for Codex with repo AGENTS.md seeding, mandatory design.md planning, and multi-variant quality gates.",
+  "author": {
+    "name": "OpenAI ChatGPT user package",
+    "email": "support@openai.com",
+    "url": "https://openai.com/"
+  },
+  "homepage": "https://iamjimthefish.github.io/openui/",
+  "repository": "https://github.com/IamJimtheFish/openui",
+  "license": "MIT",
+  "keywords": [
+    "landing-page",
+    "web-design",
+    "design-system",
+    "frontend",
+    "codex"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "OpenUI",
+    "shortDescription": "Plan with design.md, then build high-concept landing pages.",
+    "longDescription": "OpenUI ensures repo-level AGENTS.md guidance exists, resolves all landing page inputs first, writes a concrete design.md with one section and composition contract per variant, then implements each page from that plan with batch quality gates for larger variant sets.",
+    "developerName": "OpenAI ChatGPT user package",
+    "category": "Design",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://iamjimthefish.github.io/openui/",
+    "privacyPolicyURL": "https://openai.com/policies/privacy-policy/",
+    "termsOfServiceURL": "https://openai.com/policies/terms-of-use/",
+    "defaultPrompt": [
+      "Create three distinct landing page variants.",
+      "Write design.md first, then build the page."
+    ],
+    "brandColor": "#0E7C86",
+    "composerIcon": "./assets/openui-small.svg",
+    "logo": "./assets/openui.svg",
+    "screenshots": []
+  }
+}

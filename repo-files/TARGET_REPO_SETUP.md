@@ -10,7 +10,7 @@ Optional reference:
 - `design.md.example` -> not required; only for structure reference
 
 Expected repo behavior after setup:
-- Codex uses the landing-page-design skill for landing-page tasks
+- Codex uses the OpenUI skill for landing-page tasks
 - Codex creates `<repo>/AGENTS.md` if it is missing
 - Codex appends marked landing-page workflow guidance if `AGENTS.md` exists without it
 - Codex creates `/design.md` first

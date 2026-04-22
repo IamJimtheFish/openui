@@ -1,9 +1,9 @@
 # AGENTS.md
 
-<!-- landing-page-design-plugin:start -->
-## Mandatory landing-page workflow
+<!-- openui:start -->
+## Mandatory OpenUI workflow
 
-When a task asks for any of the following, use the `landing-page-design` skill before editing implementation files:
+When a task asks for any of the following, use the `openui` skill before editing implementation files:
 - landing page
 - homepage
 - marketing page
@@ -63,4 +63,4 @@ Final comparative gate:
 - For multiple React variants, create one component per variant with clear naming.
 
 Do not start implementation until `design.md` is complete.
-<!-- landing-page-design-plugin:end -->
+<!-- openui:end -->

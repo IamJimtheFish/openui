@@ -1,14 +1,14 @@
 {
-  "name": "landing-page-design-local-marketplace",
+  "name": "openui-local-marketplace",
   "interface": {
-    "displayName": "Landing Page Design Local Marketplace"
+    "displayName": "OpenUI Local Marketplace"
   },
   "plugins": [
     {
-      "name": "landing-page-design-plugin",
+      "name": "openui",
       "source": {
         "source": "local",
-        "path": "./plugins/landing-page-design-plugin"
+        "path": "./plugins/openui"
       },
       "policy": {
         "installation": "AVAILABLE",

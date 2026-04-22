@@ -1,4 +1,4 @@
-# Landing Page Design Plan
+# OpenUI Design Plan
 
 ## Variant 1
 

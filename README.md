@@ -1,37 +1,37 @@
-# Landing Page Design Codex Package
+# OpenUI Codex Package
 
 This package is a **local Codex plugin** that exposes one installable plugin:
 
-- `landing-page-design-plugin`
+- `openui`
 
 The plugin contains one skill:
 
-- `landing-page-design`
+- `openui`
 
 ---
 
 ## Live examples
 
-Open the [examples gallery](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/) or preview individual examples:
+Open the [examples gallery](https://iamjimthefish.github.io/openui/) or preview individual examples:
 
 ## Inside codex app - Model codex-5.4 high
 
 | Example                  | Preview                                                                                                                | Prompt or design source                                  |
 | ------------------------ | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| ClippyGPT Bad Advice     | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/clippygpt-bad-advice/)        | [Design](examples/clippygpt-bad-advice/design.md)        |
-| Stillwell Bottled Silence | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/stillwell-bottled-silence/)   | [Design](examples/stillwell-bottled-silence/design.md)   |
-| LTT Drop-Test Department | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/ltt-drop-test-department/)    | [Design](examples/ltt-drop-test-department/design.md)    |
-| Ship Happens             | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/ship-happens-terminal-comic/) | [Prompt](examples/ship-happens-terminal-comic/prompt.md) |
+| ClippyGPT Bad Advice     | [Preview](https://iamjimthefish.github.io/openui/examples/clippygpt-bad-advice/)        | [Design](examples/clippygpt-bad-advice/design.md)        |
+| Stillwell Bottled Silence | [Preview](https://iamjimthefish.github.io/openui/examples/stillwell-bottled-silence/)   | [Design](examples/stillwell-bottled-silence/design.md)   |
+| LTT Drop-Test Department | [Preview](https://iamjimthefish.github.io/openui/examples/ltt-drop-test-department/)    | [Design](examples/ltt-drop-test-department/design.md)    |
+| Ship Happens             | [Preview](https://iamjimthefish.github.io/openui/examples/ship-happens-terminal-comic/) | [Prompt](examples/ship-happens-terminal-comic/prompt.md) |
 
 ## Used in chatgpt.com web page, extended reasoning, all prompts are same just different topic/style input
 
 | Example              | Preview                                                                                                       | Prompt or design source                         |
 | -------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| Mnemonic Glitch      | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/mnemonic-glitch/)    | [Prompt](examples/mnemonic-glitch/prompt.md)    |
-| Theo Survival Holo   | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/theo-survival-holo/) | [Prompt](examples/theo-survival-holo/prompt.md) |
-| Tiny Truce Club      | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/tiny-truce-club/)    | [Prompt](examples/tiny-truce-club/prompt.md)    |
-| Theo Clears the Feed | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/theo-clears-feed/)   | No prompt included                              |
-| Theo t3.gg           | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/theo-t3gg/)          | No prompt included                              |
+| Mnemonic Glitch      | [Preview](https://iamjimthefish.github.io/openui/examples/mnemonic-glitch/)    | [Prompt](examples/mnemonic-glitch/prompt.md)    |
+| Theo Survival Holo   | [Preview](https://iamjimthefish.github.io/openui/examples/theo-survival-holo/) | [Prompt](examples/theo-survival-holo/prompt.md) |
+| Tiny Truce Club      | [Preview](https://iamjimthefish.github.io/openui/examples/tiny-truce-club/)    | [Prompt](examples/tiny-truce-club/prompt.md)    |
+| Theo Clears the Feed | [Preview](https://iamjimthefish.github.io/openui/examples/theo-clears-feed/)   | No prompt included                              |
+| Theo t3.gg           | [Preview](https://iamjimthefish.github.io/openui/examples/theo-t3gg/)          | No prompt included                              |
 
 Playwright can help a lot for visual QA: use it to open every generated route, capture desktop and mobile screenshots, check console errors, and catch overflow or overlap before calling a page done.
 
@@ -39,7 +39,7 @@ The imagegen skill can also help a lot when the page needs topic-native hero ima
 
 ---
 
-It is designed for landing-page generation workflows where Codex must:
+OpenUI is designed for landing-page generation workflows where Codex must:
 
 1. ensure repo-root `AGENTS.md` contains the landing-page workflow guidance
 2. create `/design.md` before implementation
@@ -55,9 +55,9 @@ It is designed for landing-page generation workflows where Codex must:
 
 - `.agents/plugins/marketplace.json`  
   Local marketplace definition for Codex.
-- `plugins/landing-page-design-plugin/.codex-plugin/plugin.json`  
+- `plugins/openui/.codex-plugin/plugin.json`  
   Plugin manifest.
-- `plugins/landing-page-design-plugin/skills/landing-page-design/SKILL.md`  
+- `plugins/openui/skills/openui/SKILL.md`  
   The actual workflow Codex uses.
 - `repo-files/AGENTS.md`  
   Optional repo-level rules reference. The skill can create or append this guidance automatically.
@@ -72,7 +72,7 @@ It is designed for landing-page generation workflows where Codex must:
 
 ## Repo guidance behavior
 
-The skill now self-seeds repo guidance when it runs:
+OpenUI self-seeds repo guidance when it runs:
 
 - If the target repository has no `AGENTS.md`, the skill creates one.
 - If the target repository has an `AGENTS.md` without landing-page workflow guidance, the skill appends a marked section.
@@ -88,7 +88,7 @@ You can still copy `repo-files/AGENTS.md` manually if you want the repository gu
 2. Add the local marketplace to Codex:
 
 ```bash
-codex plugin marketplace add ./landing-page-design-codex-marketplace
+codex plugin marketplace add ./openui
 ```
 
 Run that command from the directory that contains the unzipped folder, or replace the path with an absolute path.
@@ -101,9 +101,9 @@ Run that command from the directory that contains the unzipped folder, or replac
 
 If you want this plugin available only to one repository:
 
-1. Copy `plugins/landing-page-design-plugin` into:
+1. Copy `plugins/openui` into:
 
-   `<repo>/plugins/landing-page-design-plugin`
+   `<repo>/plugins/openui`
 
 2. Copy this marketplace file into:
 
@@ -125,7 +125,7 @@ Example:
 
 ```text
 Create 3 landing page variants for an AI-native interior design studio.
-Use the landing-page-design workflow.
+Use the openui workflow.
 ```
 
 The skill should then:
