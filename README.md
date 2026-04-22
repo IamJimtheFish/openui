@@ -5,6 +5,7 @@ This package is a **local Codex plugin** that exposes one installable plugin:
 - `landing-page-design-plugin`
 
 The plugin contains one skill:
+
 - `landing-page-design`
 
 ---
@@ -14,19 +15,22 @@ The plugin contains one skill:
 Open the [examples gallery](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/) or preview individual examples:
 
 ## Inside codex app - Model codex-5.4 high
-| Example | Preview | Prompt or design source |
-| --- | --- | --- |
-| LTT Drop-Test Department | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/ltt-drop-test-department/) | [Design](examples/ltt-drop-test-department/design.md) |
-| Ship Happens | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/ship-happens-terminal-comic/) | [Prompt](examples/ship-happens-terminal-comic/prompt.md) |
+
+| Example                  | Preview                                                                                                                | Prompt or design source                                  |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| ClippyGPT Bad Advice     | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/clippygpt-bad-advice/)        | [Design](examples/clippygpt-bad-advice/design.md)        |
+| LTT Drop-Test Department | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/ltt-drop-test-department/)    | [Design](examples/ltt-drop-test-department/design.md)    |
+| Ship Happens             | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/ship-happens-terminal-comic/) | [Prompt](examples/ship-happens-terminal-comic/prompt.md) |
 
 ## Used in chatgpt.com web page, extended reasoning, all prompts are same just different topic/style input
-| Example | Preview | Prompt or design source |
-| --- | --- | --- |
-| Mnemonic Glitch | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/mnemonic-glitch/) | [Prompt](examples/mnemonic-glitch/prompt.md) |
-| Theo Survival Holo | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/theo-survival-holo/) | [Prompt](examples/theo-survival-holo/prompt.md) |
-| Tiny Truce Club | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/tiny-truce-club/) | [Prompt](examples/tiny-truce-club/prompt.md) |
-| Theo Clears the Feed | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/theo-clears-feed/) | No prompt included |
-| Theo t3.gg | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/theo-t3gg/) | No prompt included |
+
+| Example              | Preview                                                                                                       | Prompt or design source                         |
+| -------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| Mnemonic Glitch      | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/mnemonic-glitch/)    | [Prompt](examples/mnemonic-glitch/prompt.md)    |
+| Theo Survival Holo   | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/theo-survival-holo/) | [Prompt](examples/theo-survival-holo/prompt.md) |
+| Tiny Truce Club      | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/tiny-truce-club/)    | [Prompt](examples/tiny-truce-club/prompt.md)    |
+| Theo Clears the Feed | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/theo-clears-feed/)   | No prompt included                              |
+| Theo t3.gg           | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/theo-t3gg/)          | No prompt included                              |
 
 Playwright can help a lot for visual QA: use it to open every generated route, capture desktop and mobile screenshots, check console errors, and catch overflow or overlap before calling a page done.
 
@@ -44,6 +48,7 @@ It is designed for landing-page generation workflows where Codex must:
 6. implement each page **from `design.md`**, one by one
 
 ---
+
 ## What is inside
 
 - `.agents/plugins/marketplace.json`  
@@ -60,8 +65,9 @@ It is designed for landing-page generation workflows where Codex must:
   Short instructions for the target repository.
 - `examples/`
   Previewable generated examples, each in its own folder with its prompt or design notes when available.
-  
+
 ---
+
 ## Repo guidance behavior
 
 The skill now self-seeds repo guidance when it runs:
@@ -73,6 +79,7 @@ The skill now self-seeds repo guidance when it runs:
 You can still copy `repo-files/AGENTS.md` manually if you want the repository guidance present before the first skill run.
 
 ---
+
 ## Fastest install path
 
 1. Unzip this package anywhere.
@@ -87,6 +94,7 @@ Run that command from the directory that contains the unzipped folder, or replac
 3. Restart Codex.
 
 ---
+
 ## Alternative manual repo-scoped install
 
 If you want this plugin available only to one repository:
@@ -108,6 +116,7 @@ If you want this plugin available only to one repository:
 4. Restart Codex.
 
 ---
+
 ## Suggested usage prompt in Codex
 
 Example:
@@ -118,12 +127,14 @@ Use the landing-page-design workflow.
 ```
 
 The skill should then:
+
 - create `/design.md`
 - resolve inputs independently for each variant
 - keep variants materially different
 - implement variants one by one from the design plan
 
 ---
+
 ## Notes
 
 - The skill preserves user-specified inputs when present.

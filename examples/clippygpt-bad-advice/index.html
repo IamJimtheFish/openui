@@ -1,0 +1,1148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ClippyGPT - Bad Advice, Instantly</title>
+    <meta
+      name="description"
+      content="A glossy Y2K landing page for ClippyGPT, a fake assistant that gives unhelpful life advice."
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #181045;
+        --blue: #006dff;
+        --cyan: #08e4ff;
+        --pink: #ff4bd8;
+        --lime: #a9ff22;
+        --yellow: #fff56d;
+        --mode: #ff4bd8;
+        --mode-soft: rgba(255, 75, 216, 0.22);
+        font-family: "Trebuchet MS", Arial, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-width: 320px;
+        background: #8ff5ff;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
+        color: var(--ink);
+        background:
+          radial-gradient(
+            circle at 12% 18%,
+            rgba(255, 255, 255, 0.9),
+            transparent 18rem
+          ),
+          radial-gradient(
+            circle at 83% 17%,
+            rgba(255, 245, 109, 0.82),
+            transparent 16rem
+          ),
+          radial-gradient(
+            circle at 78% 78%,
+            rgba(255, 75, 216, 0.48),
+            transparent 21rem
+          ),
+          linear-gradient(135deg, #a6fff3, #6fb7ff 33%, #e6c7ff 65%, #fff56d);
+      }
+
+      body::before,
+      body::after {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+      }
+
+      body::before {
+        z-index: -2;
+        opacity: 0.32;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.35) 1px, transparent 1px);
+        background-size: 28px 28px;
+      }
+
+      body::after {
+        z-index: 5;
+        opacity: 0.16;
+        background: repeating-linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.55) 0 1px,
+          transparent 1px 5px
+        );
+        mix-blend-mode: soft-light;
+      }
+
+      button {
+        border: 0;
+        font: inherit;
+        cursor: pointer;
+      }
+
+      button:focus-visible {
+        outline: 4px solid var(--yellow);
+        outline-offset: 4px;
+      }
+
+      .glow {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        background:
+          radial-gradient(
+            circle at var(--x, 64%) var(--y, 34%),
+            var(--mode-soft),
+            transparent 24rem
+          ),
+          radial-gradient(
+            circle at 23% 70%,
+            rgba(8, 228, 255, 0.23),
+            transparent 18rem
+          );
+      }
+
+      .window {
+        width: min(1180px, calc(100% - 24px));
+        min-height: calc(100svh - 24px);
+        margin: 12px auto;
+        overflow: hidden;
+        border: 2px solid rgba(255, 255, 255, 0.9);
+        border-right-color: rgba(47, 56, 110, 0.55);
+        border-bottom-color: rgba(47, 56, 110, 0.55);
+        background:
+          linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.78),
+            rgba(255, 255, 255, 0.34)
+          ),
+          linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.5),
+            rgba(255, 255, 255, 0.1)
+          );
+        box-shadow:
+          0 28px 70px rgba(27, 12, 88, 0.28),
+          inset 1px 1px 0 rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px) saturate(1.2);
+      }
+
+      .titlebar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        height: 34px;
+        padding: 0 8px 0 12px;
+        color: #fff;
+        font-size: 0.86rem;
+        font-weight: 900;
+        text-shadow: 1px 1px 0 #071f72;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.48), transparent 42%),
+          linear-gradient(90deg, #0536cc, #007aff 35%, #8e39ff 70%, #ff4bd8);
+        border-bottom: 1px solid rgba(30, 32, 84, 0.54);
+      }
+
+      .title-icon {
+        width: 18px;
+        height: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.86);
+        border-radius: 4px;
+        background:
+          radial-gradient(circle at 68% 30%, #fff 0 12%, transparent 13%),
+          conic-gradient(
+            from 25deg,
+            #fff56d,
+            #08e4ff,
+            #ff4bd8,
+            #a9ff22,
+            #fff56d
+          );
+      }
+
+      .title-text {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .controls {
+        display: flex;
+        gap: 4px;
+        margin-left: auto;
+      }
+
+      .control {
+        display: grid;
+        width: 24px;
+        height: 20px;
+        place-items: center;
+        color: #12206a;
+        font-size: 12px;
+        font-weight: 900;
+        background: linear-gradient(180deg, #fff, #bacdf5 54%, #7a91d2);
+        border: 1px solid rgba(255, 255, 255, 0.9);
+        border-right-color: rgba(12, 30, 85, 0.4);
+        border-bottom-color: rgba(12, 30, 85, 0.4);
+      }
+
+      .toolbar {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-height: 42px;
+        padding: 7px 12px;
+        color: #1e1b58;
+        font-size: 0.84rem;
+        font-weight: 900;
+        background:
+          linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.76),
+            rgba(206, 218, 244, 0.5)
+          ),
+          repeating-linear-gradient(
+            90deg,
+            transparent 0 12px,
+            rgba(255, 255, 255, 0.34) 12px 13px
+          );
+        border-bottom: 1px solid rgba(48, 53, 102, 0.28);
+      }
+
+      .toolbar-menu {
+        display: flex;
+        flex-wrap: wrap;
+        gap: clamp(8px, 2vw, 18px);
+      }
+
+      .status {
+        min-width: 0;
+        margin-left: auto;
+        padding: 5px 10px;
+        overflow: hidden;
+        color: #3d2e82;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        background: rgba(255, 255, 255, 0.55);
+        border: 1px inset rgba(255, 255, 255, 0.8);
+      }
+
+      .hero {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.95fr);
+        gap: clamp(18px, 4vw, 64px);
+        align-items: center;
+        min-height: min(690px, calc(100svh - 150px));
+        padding: clamp(28px, 5vw, 64px) clamp(18px, 5vw, 64px)
+          clamp(14px, 3vw, 28px);
+        overflow: hidden;
+        background:
+          radial-gradient(
+            circle at 18% 26%,
+            rgba(255, 255, 255, 0.88),
+            transparent 19%
+          ),
+          radial-gradient(
+            circle at 74% 34%,
+            rgba(169, 255, 34, 0.46),
+            transparent 18%
+          ),
+          radial-gradient(
+            circle at 54% 86%,
+            rgba(255, 75, 216, 0.24),
+            transparent 26%
+          ),
+          linear-gradient(
+            115deg,
+            rgba(255, 255, 255, 0.36),
+            rgba(255, 255, 255, 0.08)
+          );
+      }
+
+      .hero::before {
+        position: absolute;
+        inset: 0;
+        opacity: 0.48;
+        background:
+          linear-gradient(
+            135deg,
+            transparent 0 48%,
+            rgba(255, 255, 255, 0.58) 49%,
+            transparent 50%
+          ),
+          linear-gradient(
+            45deg,
+            transparent 0 48%,
+            rgba(35, 74, 211, 0.18) 49%,
+            transparent 50%
+          );
+        background-size:
+          86px 86px,
+          118px 118px;
+        content: "";
+        transform: skewY(-4deg) scale(1.1);
+      }
+
+      .hero-copy,
+      .assistant-stage {
+        position: relative;
+        z-index: 1;
+      }
+
+      .brand-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: fit-content;
+        margin-bottom: clamp(16px, 3vw, 24px);
+        padding: 6px 10px 6px 7px;
+        color: #fff;
+        font-size: 0.82rem;
+        font-weight: 900;
+        line-height: 1;
+        text-shadow: 1px 1px 0 #0d1875;
+        text-transform: uppercase;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.45), transparent 50%),
+          linear-gradient(90deg, #0e58ff, #9a4dff 54%, var(--mode));
+        border: 1px solid rgba(255, 255, 255, 0.88);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.8),
+          0 10px 24px rgba(24, 41, 130, 0.18);
+      }
+
+      .brand-chip::before {
+        width: 16px;
+        height: 16px;
+        background:
+          radial-gradient(circle at 67% 31%, #fff 0 12%, transparent 14%),
+          linear-gradient(135deg, #fff56d, #08e4ff 48%, #ff4bd8);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 4px;
+        content: "";
+      }
+
+      h1 {
+        max-width: 760px;
+        margin: 0;
+        color: #271564;
+        font-family: "Arial Black", Impact, "Trebuchet MS", sans-serif;
+        font-size: clamp(3.15rem, 8.8vw, 7.45rem);
+        line-height: 0.82;
+        letter-spacing: 0;
+        text-shadow:
+          2px 2px 0 #fff,
+          4px 4px 0 #08e4ff,
+          7px 7px 0 rgba(255, 75, 216, 0.72),
+          12px 14px 30px rgba(35, 22, 96, 0.24);
+        text-transform: uppercase;
+      }
+
+      .headline-shine {
+        display: block;
+        color: transparent;
+        background: linear-gradient(
+          180deg,
+          #fff 0 12%,
+          #ffe9ff 13% 24%,
+          #0c4fff 25% 45%,
+          #271564 46% 62%,
+          #ff4bd8 63% 80%,
+          #fff56d 81%
+        );
+        filter: drop-shadow(4px 5px 0 rgba(8, 228, 255, 0.72));
+        -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
+        background-clip: text;
+        -webkit-background-clip: text;
+        animation: tinyJitter 4.4s steps(1, end) infinite;
+      }
+
+      .hero-copy p {
+        max-width: 560px;
+        margin: clamp(20px, 3vw, 28px) 0 0;
+        color: #251a5c;
+        font-size: clamp(1.04rem, 1.7vw, 1.28rem);
+        font-weight: 800;
+        line-height: 1.45;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+      }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: clamp(20px, 3vw, 30px);
+      }
+
+      .cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: min(100%, 178px);
+        min-height: 48px;
+        gap: 10px;
+        padding: 12px 18px;
+        color: #10205b;
+        font-weight: 900;
+        background: linear-gradient(180deg, #fff, #d9e2ff);
+        border: 2px solid rgba(255, 255, 255, 0.94);
+        border-right-color: rgba(26, 34, 91, 0.52);
+        border-bottom-color: rgba(26, 34, 91, 0.52);
+        box-shadow:
+          inset 0 1px 0 #fff,
+          inset 0 -7px 12px rgba(45, 52, 132, 0.18),
+          0 12px 26px rgba(28, 33, 112, 0.22);
+        transition:
+          transform 0.18s ease,
+          filter 0.18s ease;
+      }
+
+      .cta:hover {
+        transform: translateY(-2px);
+        filter: saturate(1.15);
+      }
+
+      .cta:active {
+        transform: translateY(1px);
+      }
+
+      .cta-primary {
+        background: linear-gradient(
+          180deg,
+          #fff,
+          rgba(255, 245, 109, 0.88) 34%,
+          var(--lime)
+        );
+      }
+
+      .button-icon {
+        display: grid;
+        width: 22px;
+        height: 22px;
+        place-items: center;
+        color: #fff;
+        font-size: 0.9rem;
+        text-shadow: 1px 1px 0 #12216a;
+        background:
+          linear-gradient(180deg, #fff, rgba(255, 255, 255, 0.25)),
+          linear-gradient(135deg, var(--cyan), var(--mode));
+        border: 1px solid rgba(255, 255, 255, 0.82);
+      }
+
+      .assistant-stage {
+        display: grid;
+        min-height: 460px;
+        place-items: center;
+      }
+
+      .assistant-stage::before {
+        position: absolute;
+        width: min(38vw, 430px);
+        aspect-ratio: 1;
+        background:
+          radial-gradient(
+            circle at 50% 44%,
+            rgba(255, 255, 255, 0.86) 0 9%,
+            transparent 10%
+          ),
+          conic-gradient(
+            from 30deg,
+            rgba(255, 255, 255, 0.95),
+            rgba(8, 228, 255, 0.52),
+            rgba(255, 75, 216, 0.54),
+            rgba(255, 245, 109, 0.64),
+            rgba(255, 255, 255, 0.95)
+          );
+        border-radius: 50%;
+        content: "";
+        opacity: 0.9;
+        animation: chromeSpin 12s linear infinite;
+      }
+
+      .assistant-orbit {
+        position: relative;
+        display: grid;
+        width: min(92%, 440px);
+        min-height: 390px;
+        place-items: end center;
+      }
+
+      .speech {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: min(100%, 320px);
+        min-height: 128px;
+        padding: 14px 16px 18px;
+        color: #1f1659;
+        background: linear-gradient(
+          180deg,
+          #fff,
+          rgba(232, 241, 255, 0.94) 64%,
+          rgba(197, 210, 247, 0.94)
+        );
+        border: 2px solid rgba(255, 255, 255, 0.92);
+        border-right-color: rgba(63, 58, 117, 0.46);
+        border-bottom-color: rgba(63, 58, 117, 0.46);
+        box-shadow:
+          inset 0 1px 0 #fff,
+          0 18px 36px rgba(33, 24, 101, 0.22);
+        transform: rotate(1.6deg);
+      }
+
+      .speech::after {
+        position: absolute;
+        right: 64px;
+        bottom: -17px;
+        width: 28px;
+        height: 28px;
+        background: linear-gradient(135deg, rgba(197, 210, 247, 0.94), #fff);
+        border-right: 2px solid rgba(63, 58, 117, 0.46);
+        border-bottom: 2px solid rgba(63, 58, 117, 0.46);
+        content: "";
+        transform: rotate(45deg);
+      }
+
+      .speech-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+        color: #4450a6;
+        font-size: 0.76rem;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .speech-light {
+        width: 10px;
+        height: 10px;
+        background: var(--lime);
+        border-radius: 50%;
+        box-shadow:
+          0 0 0 3px rgba(169, 255, 34, 0.23),
+          0 0 14px rgba(169, 255, 34, 0.9);
+      }
+
+      .advice {
+        min-height: 58px;
+        margin: 0;
+        font-family: "Arial Black", "Trebuchet MS", sans-serif;
+        font-size: clamp(1.05rem, 2vw, 1.35rem);
+        line-height: 1.1;
+      }
+
+      .paperclip {
+        width: min(72vw, 290px);
+        height: auto;
+        margin-top: 100px;
+        overflow: visible;
+        filter: drop-shadow(0 28px 22px rgba(27, 17, 82, 0.25));
+        transform-origin: 50% 74%;
+        animation: idleBob 3.8s ease-in-out infinite;
+      }
+
+      .metal,
+      .metal-inner {
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .metal {
+        stroke: url(#clipChrome);
+        stroke-width: 30;
+      }
+
+      .metal-inner {
+        stroke: rgba(255, 255, 255, 0.72);
+        stroke-width: 13;
+      }
+
+      .eye-white {
+        fill: url(#eyeGloss);
+        stroke: #283174;
+        stroke-width: 4;
+      }
+
+      .pupil {
+        fill: #1b1852;
+      }
+
+      .shine-spot {
+        fill: rgba(255, 255, 255, 0.85);
+      }
+
+      .sparkle {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background:
+          linear-gradient(var(--mode), var(--mode)) 50% 0 / 4px 100% no-repeat,
+          linear-gradient(90deg, var(--mode), var(--mode)) 0 50% / 100% 4px
+            no-repeat;
+        filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.8));
+        opacity: 0.85;
+        animation: blink 2.6s steps(1, end) infinite;
+      }
+
+      .sparkle.one {
+        top: 42%;
+        left: 12%;
+      }
+
+      .sparkle.two {
+        right: 8%;
+        bottom: 18%;
+        animation-delay: 1.1s;
+      }
+
+      .support {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        padding: 0 clamp(18px, 5vw, 64px) clamp(22px, 4vw, 42px);
+      }
+
+      .support-item {
+        display: grid;
+        grid-template-columns: 34px 1fr;
+        gap: 12px;
+        min-height: 112px;
+        padding: 14px;
+        background:
+          linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.72),
+            rgba(255, 255, 255, 0.36)
+          ),
+          linear-gradient(
+            135deg,
+            rgba(8, 228, 255, 0.13),
+            rgba(255, 75, 216, 0.12)
+          );
+        border: 1px solid rgba(255, 255, 255, 0.78);
+        border-right-color: rgba(53, 58, 112, 0.28);
+        border-bottom-color: rgba(53, 58, 112, 0.28);
+      }
+
+      .support-icon {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        color: #fff;
+        font-weight: 900;
+        text-shadow: 1px 1px 0 #142070;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.56), transparent 48%),
+          linear-gradient(135deg, #006dff, var(--mode));
+        border: 1px solid rgba(255, 255, 255, 0.84);
+      }
+
+      .support-item h2 {
+        margin: 1px 0 5px;
+        color: #24135f;
+        font-size: clamp(0.96rem, 1.5vw, 1.06rem);
+        line-height: 1.08;
+      }
+
+      .support-item p {
+        margin: 0;
+        color: #463b82;
+        font-size: 0.92rem;
+        font-weight: 700;
+        line-height: 1.35;
+      }
+
+      .pop .paperclip {
+        animation:
+          shimmy 0.55s ease,
+          idleBob 3.8s ease-in-out 0.55s infinite;
+      }
+
+      .pop .speech {
+        animation: speechPop 0.5s ease;
+      }
+
+      body[data-mood="dramatic"] {
+        --mode: #ff4bd8;
+        --mode-soft: rgba(255, 75, 216, 0.24);
+      }
+
+      body[data-mood="corporate"] {
+        --mode: #006dff;
+        --mode-soft: rgba(0, 109, 255, 0.22);
+      }
+
+      body[data-mood="mystic"] {
+        --mode: #a9ff22;
+        --mode-soft: rgba(169, 255, 34, 0.22);
+      }
+
+      @keyframes idleBob {
+        0%,
+        100% {
+          transform: translateY(0) rotate(-1.5deg);
+        }
+        50% {
+          transform: translateY(-10px) rotate(1.2deg);
+        }
+      }
+
+      @keyframes shimmy {
+        0% {
+          transform: translateX(0) rotate(-1.5deg);
+        }
+        25% {
+          transform: translateX(-8px) rotate(-4deg);
+        }
+        52% {
+          transform: translateX(8px) rotate(5deg);
+        }
+        100% {
+          transform: translateX(0) rotate(-1.5deg);
+        }
+      }
+
+      @keyframes speechPop {
+        0% {
+          transform: rotate(1.6deg) scale(0.96);
+        }
+        100% {
+          transform: rotate(1.6deg) scale(1);
+        }
+      }
+
+      @keyframes chromeSpin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes blink {
+        0%,
+        16%,
+        100% {
+          opacity: 0.85;
+          transform: scale(1) rotate(0deg);
+        }
+        17%,
+        20% {
+          opacity: 0.18;
+          transform: scale(0.76) rotate(45deg);
+        }
+      }
+
+      @keyframes tinyJitter {
+        0%,
+        86%,
+        100% {
+          transform: translate(0, 0);
+        }
+        87% {
+          transform: translate(2px, -1px);
+        }
+        88% {
+          transform: translate(-1px, 1px);
+        }
+        89% {
+          transform: translate(0, 0);
+        }
+      }
+
+      @media (max-width: 900px) {
+        .window {
+          width: calc(100% - 16px);
+          min-height: calc(100svh - 16px);
+          margin-block: 8px;
+        }
+
+        .status {
+          display: none;
+        }
+
+        .hero {
+          grid-template-columns: 1fr;
+          min-height: auto;
+          gap: 16px;
+          padding-top: 30px;
+        }
+
+        .assistant-stage {
+          min-height: 300px;
+        }
+
+        .assistant-orbit {
+          min-height: 290px;
+          width: min(100%, 380px);
+        }
+
+        .speech {
+          right: 6px;
+          width: min(95%, 304px);
+        }
+
+        .paperclip {
+          width: min(58vw, 228px);
+          margin-top: 76px;
+        }
+
+        .support {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .titlebar {
+          height: 32px;
+        }
+
+        .control {
+          width: 21px;
+          height: 18px;
+        }
+
+        .toolbar {
+          min-height: 36px;
+          padding: 6px 9px;
+        }
+
+        .toolbar-menu {
+          gap: 9px;
+          font-size: 0.76rem;
+        }
+
+        .hero {
+          padding: 28px 14px 12px;
+        }
+
+        .brand-chip {
+          font-size: 0.74rem;
+        }
+
+        h1 {
+          max-width: 100%;
+          font-size: clamp(2.55rem, 13vw, 3.35rem);
+          line-height: 0.82;
+          text-shadow:
+            1px 1px 0 #fff,
+            3px 3px 0 #08e4ff,
+            5px 5px 0 rgba(255, 75, 216, 0.72),
+            9px 11px 22px rgba(35, 22, 96, 0.24);
+        }
+
+        .hero-copy p {
+          font-size: 1rem;
+        }
+
+        .cta-row {
+          display: grid;
+          grid-template-columns: 1fr;
+        }
+
+        .cta {
+          width: 100%;
+          min-width: 0;
+        }
+
+        .assistant-stage {
+          min-height: 272px;
+        }
+
+        .assistant-orbit {
+          min-height: 264px;
+        }
+
+        .speech {
+          right: 0;
+          width: 100%;
+          min-height: 120px;
+          transform: rotate(0.8deg);
+        }
+
+        .speech::after {
+          right: 52px;
+        }
+
+        .advice {
+          font-size: 1rem;
+        }
+
+        .paperclip {
+          width: min(58vw, 190px);
+          margin-top: 88px;
+        }
+
+        .support {
+          padding: 0 14px 20px;
+        }
+
+        .support-item {
+          min-height: auto;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          scroll-behavior: auto !important;
+          transition-duration: 0.001ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body data-mood="dramatic">
+    <div class="glow" aria-hidden="true"></div>
+    <div class="window">
+      <header class="titlebar" aria-label="ClippyGPT window">
+        <span class="title-icon" aria-hidden="true"></span>
+        <span class="title-text"
+          >ClippyGPT.exe - Unhelpful Life Advice Wizard</span
+        >
+        <span class="controls" aria-hidden="true">
+          <span class="control">_</span>
+          <span class="control">□</span>
+          <span class="control">x</span>
+        </span>
+      </header>
+
+      <div class="toolbar" aria-hidden="true">
+        <span class="toolbar-menu">
+          <span>File</span>
+          <span>Regret</span>
+          <span>Format</span>
+          <span>Help?</span>
+        </span>
+        <span class="status">Status: confidently irrelevant</span>
+      </div>
+
+      <main>
+        <section class="hero" aria-labelledby="page-title">
+          <div class="hero-copy">
+            <div class="brand-chip">Windows into poor choices</div>
+            <h1 id="page-title">
+              ClippyGPT <span class="headline-shine">Bad Advice</span>
+            </h1>
+            <p>
+              A glossy desktop assistant for anyone who wants life guidance with
+              maximum chrome and minimum usefulness.
+            </p>
+            <div class="cta-row" aria-label="ClippyGPT actions">
+              <button class="cta cta-primary" id="askAdvice" type="button">
+                <span class="button-icon" aria-hidden="true">?</span>
+                <span>Ask Bad Advice</span>
+              </button>
+              <button class="cta cta-secondary" id="switchMood" type="button">
+                <span class="button-icon" aria-hidden="true">*</span>
+                <span>Change Advice Mood</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="assistant-stage" id="assistantStage">
+            <div class="assistant-orbit">
+              <div class="speech" role="status" aria-live="polite">
+                <div class="speech-label">
+                  <span class="speech-light" aria-hidden="true"></span>
+                  Assistant tip
+                </div>
+                <p class="advice" id="adviceText">
+                  It looks like you are making a decision. Try asking everyone
+                  except yourself.
+                </p>
+              </div>
+
+              <span class="sparkle one" aria-hidden="true"></span>
+              <span class="sparkle two" aria-hidden="true"></span>
+
+              <svg
+                class="paperclip"
+                viewBox="0 0 360 430"
+                role="img"
+                aria-labelledby="clipTitle clipDesc"
+              >
+                <title id="clipTitle">ClippyGPT paperclip assistant</title>
+                <desc id="clipDesc">
+                  A glossy paperclip mascot with wide eyes and a reflective
+                  chrome body.
+                </desc>
+                <defs>
+                  <linearGradient
+                    id="clipChrome"
+                    x1="38"
+                    y1="40"
+                    x2="306"
+                    y2="382"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop offset="0" stop-color="#ffffff"></stop>
+                    <stop offset=".18" stop-color="#b9f7ff"></stop>
+                    <stop offset=".38" stop-color="#7b8bd8"></stop>
+                    <stop offset=".58" stop-color="#fff"></stop>
+                    <stop offset=".77" stop-color="#ff9bed"></stop>
+                    <stop offset="1" stop-color="#707aa0"></stop>
+                  </linearGradient>
+                  <radialGradient id="eyeGloss" cx="34%" cy="24%" r="74%">
+                    <stop offset="0" stop-color="#ffffff"></stop>
+                    <stop offset=".46" stop-color="#f5fbff"></stop>
+                    <stop offset="1" stop-color="#c2d7ff"></stop>
+                  </radialGradient>
+                </defs>
+                <path
+                  class="metal"
+                  d="M188 366c-58 28-126-13-126-78V104c0-48 39-87 87-87s87 39 87 87v204c0 31-25 56-56 56s-56-25-56-56V118c0-15 12-27 27-27s27 12 27 27v171"
+                ></path>
+                <path
+                  class="metal-inner"
+                  d="M188 366c-58 28-126-13-126-78V104c0-48 39-87 87-87s87 39 87 87v204c0 31-25 56-56 56s-56-25-56-56V118c0-15 12-27 27-27s27 12 27 27v171"
+                ></path>
+                <ellipse
+                  class="eye-white"
+                  cx="201"
+                  cy="100"
+                  rx="34"
+                  ry="38"
+                  transform="rotate(-6 201 100)"
+                ></ellipse>
+                <ellipse
+                  class="eye-white"
+                  cx="269"
+                  cy="101"
+                  rx="34"
+                  ry="38"
+                  transform="rotate(6 269 101)"
+                ></ellipse>
+                <circle class="pupil" cx="212" cy="111" r="10"></circle>
+                <circle class="pupil" cx="258" cy="111" r="10"></circle>
+                <ellipse
+                  class="shine-spot"
+                  cx="190"
+                  cy="84"
+                  rx="10"
+                  ry="7"
+                  transform="rotate(-24 190 84)"
+                ></ellipse>
+                <ellipse
+                  class="shine-spot"
+                  cx="258"
+                  cy="84"
+                  rx="10"
+                  ry="7"
+                  transform="rotate(-24 258 84)"
+                ></ellipse>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section class="support" aria-label="ClippyGPT highlights">
+          <article class="support-item">
+            <span class="support-icon" aria-hidden="true">!</span>
+            <div>
+              <h2>Vague confidence</h2>
+              <p>
+                Every answer arrives polished, loud, and almost adjacent to the
+                problem.
+              </p>
+            </div>
+          </article>
+          <article class="support-item">
+            <span class="support-icon" aria-hidden="true">?</span>
+            <div>
+              <h2>Desktop nostalgia</h2>
+              <p>
+                Chrome bevels, candy gradients, and a toolbar that remembers
+                your bad choices.
+              </p>
+            </div>
+          </article>
+          <article class="support-item">
+            <span class="support-icon" aria-hidden="true">*</span>
+            <div>
+              <h2>Zero wisdom mode</h2>
+              <p>For moments when practical advice would ruin the aesthetic.</p>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const adviceByMood = {
+        dramatic: [
+          "It looks like you are making a decision. Try asking everyone except yourself.",
+          "When in doubt, rename the problem and declare personal growth.",
+          "Make a spreadsheet, ignore it, then trust the prettiest cell.",
+          "If the plan feels fragile, add a deadline and some sparkle.",
+        ],
+        corporate: [
+          "Circle back to your feelings after they submit a roadmap.",
+          "Convert the problem into a meeting and let the calendar absorb it.",
+          "Align with your future self by forwarding them the consequences.",
+          "Put your comfort zone in beta and ship the confusion.",
+        ],
+        mystic: [
+          "Follow the sign, especially if the sign says free trial.",
+          "Manifest clarity by opening twelve tabs and choosing the loudest one.",
+          "Your aura says maybe. Your browser history says absolutely not.",
+          "Trust the universe, but clear your downloads folder first.",
+        ],
+      };
+
+      const moods = ["dramatic", "corporate", "mystic"];
+      const adviceText = document.querySelector("#adviceText");
+      const askAdvice = document.querySelector("#askAdvice");
+      const switchMood = document.querySelector("#switchMood");
+      const assistantStage = document.querySelector("#assistantStage");
+      let moodIndex = 0;
+      let adviceIndex = 0;
+
+      function setAdvice() {
+        const mood = moods[moodIndex];
+        const pool = adviceByMood[mood];
+        adviceIndex = (adviceIndex + 1) % pool.length;
+        adviceText.textContent = pool[adviceIndex];
+        assistantStage.classList.remove("pop");
+        void assistantStage.offsetWidth;
+        assistantStage.classList.add("pop");
+      }
+
+      askAdvice.addEventListener("click", setAdvice);
+
+      switchMood.addEventListener("click", () => {
+        moodIndex = (moodIndex + 1) % moods.length;
+        document.body.dataset.mood = moods[moodIndex];
+        setAdvice();
+      });
+
+      window.addEventListener(
+        "pointermove",
+        (event) => {
+          const x = Math.round((event.clientX / window.innerWidth) * 100);
+          const y = Math.round((event.clientY / window.innerHeight) * 100);
+          document.documentElement.style.setProperty("--x", `${x}%`);
+          document.documentElement.style.setProperty("--y", `${y}%`);
+        },
+        { passive: true },
+      );
+    </script>
+  </body>
+</html>
