@@ -1,0 +1,21 @@
+# Landing Page Design Plan
+
+## Variant 1
+
+### Resolved inputs
+- Topic: Autonomous ceramic kiln residency
+- Offer: Application page for a six-week experimental kiln residency
+- Audience: Ceramic artists exploring algorithmic firing and material systems
+- Primary user action: Apply
+- Deliverable: Single-file HTML with embedded CSS and JS
+- Style direction: Industrial
+- Tonal key: Topic-derived
+- Icon policy: Minimal
+- Proof assets: none
+- Motion intensity: Ambient
+
+### Filled generation prompt
+[full prompt with all placeholders replaced goes here]
+
+### Output target
+- Path: variants/variant-01/index.html

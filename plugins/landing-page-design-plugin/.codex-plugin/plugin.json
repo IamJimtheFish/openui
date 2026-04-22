@@ -1,0 +1,44 @@
+{
+  "name": "landing-page-design-plugin",
+  "version": "0.1.1",
+  "description": "High-concept landing page workflow for Codex with repo AGENTS.md seeding and mandatory design.md planning before implementation.",
+  "author": {
+    "name": "OpenAI ChatGPT user package",
+    "email": "support@openai.com",
+    "url": "https://openai.com/"
+  },
+  "homepage": "https://openai.com/",
+  "repository": "https://github.com/openai/plugins",
+  "license": "MIT",
+  "keywords": [
+    "landing-page",
+    "web-design",
+    "design-system",
+    "frontend",
+    "codex"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Landing Page Design",
+    "shortDescription": "Write design.md first, then build one or more high-concept landing pages.",
+    "longDescription": "Ensures repo-level AGENTS.md guidance exists, resolves all landing page inputs first, writes a concrete design.md with one section per variant, then implements each page from that plan.",
+    "developerName": "OpenAI ChatGPT user package",
+    "category": "Design",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://openai.com/",
+    "privacyPolicyURL": "https://openai.com/policies/privacy-policy/",
+    "termsOfServiceURL": "https://openai.com/policies/terms-of-use/",
+    "defaultPrompt": [
+      "Create three distinct landing page variants.",
+      "Write design.md first, then build the page."
+    ],
+    "brandColor": "#0E7C86",
+    "composerIcon": "./assets/landing-page-design-small.svg",
+    "logo": "./assets/landing-page-design.svg",
+    "screenshots": []
+  }
+}

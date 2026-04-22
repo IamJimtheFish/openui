@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Landing Page Design">
+  <rect width="64" height="64" rx="14" fill="#0B1F24"/>
+  <path d="M16 18h32v7H16z" fill="#F7D36B"/>
+  <path d="M16 30h22v4H16z" fill="#8FD7D5"/>
+  <path d="M16 39h32v7H16z" fill="#F4F0E6"/>
+  <path d="M42 30h6v4h-6z" fill="#F05D5E"/>
+</svg>

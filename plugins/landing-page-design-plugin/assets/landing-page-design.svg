@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Landing Page Design">
+  <rect width="256" height="256" rx="48" fill="#0B1F24"/>
+  <path d="M48 56h160v28H48z" fill="#F7D36B"/>
+  <path d="M48 104h104v14H48z" fill="#8FD7D5"/>
+  <path d="M48 130h78v14H48z" fill="#8FD7D5" opacity=".72"/>
+  <path d="M48 166h160v34H48z" fill="#F4F0E6"/>
+  <path d="M168 104h40v40h-40z" fill="#F05D5E"/>
+  <path d="M64 181h80v5H64z" fill="#0B1F24" opacity=".8"/>
+  <path d="M64 191h48v5H64z" fill="#0B1F24" opacity=".55"/>
+</svg>
