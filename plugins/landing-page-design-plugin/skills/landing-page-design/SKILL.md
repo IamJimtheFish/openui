@@ -113,6 +113,7 @@ Rules:
 - Variants must differ conceptually, not just cosmetically.
 - If the overall topic is fixed by the user, create different topic angles or framings within that topic instead of changing the topic entirely.
 - Never invent proof assets. If none are provided and none are credibly available from the prompt, write `none`.
+- If motion intensity is not specified by the user, use `Rich but controlled`.
 
 ## Phase 3 — Create `/design.md`
 
@@ -189,7 +190,7 @@ Create one high-concept landing page for [Topic].
 - Tonal key: [Optional. Light / Mid / Dark / Topic-derived. If missing, choose the strongest topic-native tonal key.]
 - Icon policy: [Optional. None / Minimal / Expressive / Topic-native / Auto-if-useful. If missing, use icons only when they improve scanability, recognition, or support clarity.]
 - Proof assets: [Optional. Real numbers, testimonials, screenshots, product surfaces, physical artifacts, references, or none.]
-- Motion intensity: [Optional. Minimal / Ambient / Rich. Ambient by default.]
+- Motion intensity: [Optional. Minimal / Ambient / Rich but controlled. Rich but controlled by default.]
 
 ## Objective
 Design one premium, memorable landing page concept with a dominant hero and one coherent visual world derived from the topic itself.
