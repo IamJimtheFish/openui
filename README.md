@@ -31,6 +31,27 @@ It is designed for landing-page generation workflows where Codex must:
   Example shape of the design plan file.
 - `repo-files/TARGET_REPO_SETUP.md`  
   Short instructions for the target repository.
+- `examples/`
+  Previewable generated examples, each in its own folder with its prompt or design notes when available.
+
+---
+## Live examples
+
+Open the [examples gallery](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/) or preview individual examples:
+
+| Example | Preview | Prompt or design source |
+| --- | --- | --- |
+| Mnemonic Glitch | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/mnemonic-glitch/) | [Prompt](examples/mnemonic-glitch/prompt.md) |
+| Theo Survival Holo | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/theo-survival-holo/) | [Prompt](examples/theo-survival-holo/prompt.md) |
+| Tiny Truce Club | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/tiny-truce-club/) | [Prompt](examples/tiny-truce-club/prompt.md) |
+| Theo Clears the Feed | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/theo-clears-feed/) | No prompt included |
+| Theo t3.gg | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/theo-t3gg/) | No prompt included |
+| LTT Drop-Test Department | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/ltt-drop-test-department/) | [Design](examples/ltt-drop-test-department/design.md) |
+| Ship Happens | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/ship-happens-terminal-comic/) | [Prompt](examples/ship-happens-terminal-comic/prompt.md) |
+
+Playwright can help a lot for visual QA: use it to open every generated route, capture desktop and mobile screenshots, check console errors, and catch overflow or overlap before calling a page done.
+
+The imagegen skill can also help a lot when the page needs topic-native hero images, proof artifacts, textures, product shots, or other bitmap assets that should not be faked with generic placeholders.
 
 ---
 ## Repo guidance behavior

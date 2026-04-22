@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Theo Survival Kit</title>
+  <style>
+    :root {
+      --bg-1: #060315;
+      --bg-2: #120822;
+      --bg-3: #05101f;
+      --text: #f7f4ff;
+      --muted: rgba(239, 234, 255, 0.72);
+      --line: rgba(255, 255, 255, 0.12);
+      --soft: rgba(255, 255, 255, 0.08);
+      --pink: #ff66da;
+      --cyan: #74f2ff;
+      --violet: #8d7cff;
+      --lime: #c6ff8a;
+      --gold: #ffd37f;
+      --shadow: 0 24px 80px rgba(90, 24, 155, 0.25);
+      --hero-max: 1180px;
+      --mouse-x: 50%;
+      --mouse-y: 50%;
+      --tilt-x: 0deg;
+      --tilt-y: 0deg;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      color-scheme: dark;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(116, 242, 255, 0.16), transparent 28%),
+        radial-gradient(circle at 86% 18%, rgba(255, 102, 218, 0.18), transparent 30%),
+        radial-gradient(circle at 52% 88%, rgba(141, 124, 255, 0.18), transparent 33%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2) 52%, var(--bg-3));
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: -12%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::before {
+      background:
+        radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.08), transparent 18%),
+        conic-gradient(from 210deg at 50% 50%, rgba(255,102,218,0.16), rgba(116,242,255,0.09), rgba(198,255,138,0.10), rgba(141,124,255,0.12), rgba(255,102,218,0.16));
+      filter: blur(72px) saturate(145%);
+      opacity: 0.85;
+      animation: drift 18s linear infinite;
+    }
+
+    body::after {
+      background-image:
+        linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 46px 46px;
+      mask-image: radial-gradient(circle at center, black 42%, transparent 82%);
+      opacity: 0.18;
+      transform: perspective(1000px) rotateX(76deg) translateY(30vh) scale(1.8);
+      transform-origin: center;
+    }
+
+    @keyframes drift {
+      0%   { transform: rotate(0deg) scale(1); }
+      50%  { transform: rotate(180deg) scale(1.08); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    .noise,
+    .scanlines,
+    .rings,
+    .ticker,
+    .signal-word {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .noise {
+      opacity: 0.06;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.9) 0 0.55px, transparent 0.65px),
+        radial-gradient(circle at 70% 30%, rgba(255,255,255,0.8) 0 0.5px, transparent 0.6px),
+        radial-gradient(circle at 40% 80%, rgba(255,255,255,0.9) 0 0.7px, transparent 0.8px);
+      background-size: 150px 150px, 180px 180px, 210px 210px;
+      mix-blend-mode: screen;
+    }
+
+    .scanlines {
+      background: linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0.01) 48%, rgba(0,0,0,0.02) 52%, rgba(255,255,255,0.05));
+      background-size: 100% 4px;
+      opacity: 0.16;
+    }
+
+    .rings {
+      display: grid;
+      place-items: center;
+    }
+
+    .rings::before,
+    .rings::after {
+      content: "";
+      width: min(86vw, 980px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      position: absolute;
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.10), transparent 42%),
+                  conic-gradient(from 90deg, rgba(255,102,218,0.46), rgba(116,242,255,0.18), rgba(198,255,138,0.18), rgba(141,124,255,0.36), rgba(255,102,218,0.46));
+      filter: blur(1px);
+      mask: radial-gradient(circle at center, transparent 55%, black 57%, black 61%, transparent 64%);
+      animation: orbit 26s linear infinite;
+      opacity: 0.6;
+    }
+
+    .rings::after {
+      width: min(70vw, 760px);
+      animation-direction: reverse;
+      animation-duration: 18s;
+      opacity: 0.35;
+      transform: translateY(8px);
+    }
+
+    @keyframes orbit {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .ticker {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: clamp(2rem, 6vw, 4rem);
+      overflow: hidden;
+      opacity: 0.42;
+    }
+
+    .ticker-track {
+      display: flex;
+      gap: 3rem;
+      white-space: nowrap;
+      font-size: clamp(0.72rem, 1vw, 0.92rem);
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      color: rgba(240, 235, 255, 0.54);
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      animation: ticker 26s linear infinite;
+    }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .signal-word {
+      display: grid;
+      place-items: center;
+      opacity: 0.17;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: clamp(7rem, 18vw, 18rem);
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255,255,255,0.15);
+      transform: translateZ(0);
+      mix-blend-mode: screen;
+      user-select: none;
+    }
+
+    .signal-word span {
+      background: linear-gradient(90deg, rgba(255,102,218,0.9), rgba(116,242,255,0.9), rgba(198,255,138,0.8));
+      -webkit-background-clip: text;
+      background-clip: text;
+      filter: blur(0.4px);
+      animation: shiver 8s ease-in-out infinite;
+    }
+
+    @keyframes shiver {
+      0%, 100% { transform: translateX(0); }
+      15% { transform: translateX(2px) skewX(2deg); }
+      18% { transform: translateX(-2px) skewX(-2deg); }
+      60% { transform: translateX(0); }
+      62% { transform: translateX(1px) skewX(1deg); }
+      64% { transform: translateX(-1px) skewX(-1deg); }
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: clamp(1.25rem, 3vw, 2rem);
+      isolation: isolate;
+    }
+
+    .hero {
+      width: min(100%, var(--hero-max));
+      min-height: calc(100vh - 2.5rem);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .hero-inner {
+      width: min(100%, 1040px);
+      text-align: center;
+      position: relative;
+      transform: perspective(1200px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+      transition: transform 280ms ease-out;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 1rem;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 999px;
+      color: rgba(248, 246, 255, 0.84);
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(16px);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      box-shadow: 0 0 0 1px rgba(116,242,255,0.04) inset;
+    }
+
+    .eyebrow-mark {
+      width: 0.7rem;
+      height: 0.7rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--pink), var(--cyan));
+      box-shadow: 0 0 12px rgba(116,242,255,0.85), 0 0 22px rgba(255,102,218,0.42);
+      flex: 0 0 auto;
+    }
+
+    h1 {
+      margin: 1.4rem auto 1rem;
+      max-width: 11ch;
+      font-size: clamp(3.4rem, 10vw, 8.6rem);
+      line-height: 0.92;
+      letter-spacing: -0.07em;
+      font-weight: 900;
+      position: relative;
+      text-wrap: balance;
+    }
+
+    .headline-base {
+      display: inline;
+      color: rgba(255,255,255,0.96);
+      text-shadow:
+        0 0 12px rgba(255,255,255,0.14),
+        0 0 42px rgba(116,242,255,0.16),
+        0 0 72px rgba(255,102,218,0.12);
+    }
+
+    .headline-accent {
+      position: relative;
+      display: inline-block;
+      background: linear-gradient(100deg, #fff6fb 0%, #ff98e5 18%, #85fbff 42%, #d8ffc2 62%, #b4a8ff 82%, #fff2ce 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: saturate(140%);
+      animation: hue-roll 7s linear infinite;
+    }
+
+    .headline-accent::before,
+    .headline-accent::after {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.42;
+      mix-blend-mode: screen;
+    }
+
+    .headline-accent::before {
+      transform: translate(-0.03em, -0.015em);
+      color: rgba(255, 102, 218, 0.55);
+      animation: ghost-left 3.2s ease-in-out infinite;
+    }
+
+    .headline-accent::after {
+      transform: translate(0.03em, 0.015em);
+      color: rgba(116, 242, 255, 0.50);
+      animation: ghost-right 3.2s ease-in-out infinite;
+    }
+
+    @keyframes ghost-left {
+      0%, 100% { transform: translate(-0.03em, -0.015em); opacity: 0.38; }
+      14% { transform: translate(-0.01em, 0.01em); opacity: 0.48; }
+      15% { transform: translate(-0.06em, -0.04em); opacity: 0.6; }
+      16% { transform: translate(-0.02em, 0); opacity: 0.32; }
+    }
+
+    @keyframes ghost-right {
+      0%, 100% { transform: translate(0.03em, 0.015em); opacity: 0.28; }
+      30% { transform: translate(0.02em, 0); opacity: 0.48; }
+      31% { transform: translate(0.05em, 0.03em); opacity: 0.58; }
+      32% { transform: translate(0.015em, 0.005em); opacity: 0.26; }
+    }
+
+    @keyframes hue-roll {
+      0% { filter: hue-rotate(0deg) saturate(138%); }
+      50% { filter: hue-rotate(18deg) saturate(160%); }
+      100% { filter: hue-rotate(0deg) saturate(138%); }
+    }
+
+    .supporting-copy {
+      margin: 0 auto;
+      max-width: 44rem;
+      font-size: clamp(1rem, 1.6vw, 1.22rem);
+      line-height: 1.6;
+      color: var(--muted);
+      text-wrap: balance;
+    }
+
+    .supporting-copy strong {
+      color: rgba(255,255,255,0.95);
+      font-weight: 700;
+    }
+
+    .cta-row {
+      margin-top: 1.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.85rem;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .btn {
+      position: relative;
+      padding: 1rem 1.3rem;
+      border-radius: 999px;
+      min-width: 12.75rem;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease, color 180ms ease;
+      outline: none;
+      isolation: isolate;
+    }
+
+    .btn:focus-visible,
+    .support-chip button:focus-visible {
+      box-shadow: 0 0 0 3px rgba(6, 3, 21, 0.9), 0 0 0 5px rgba(116, 242, 255, 0.7);
+    }
+
+    .btn-primary {
+      color: #090512;
+      background: linear-gradient(115deg, #fffaf6 0%, #ffadd8 18%, #92f9ff 42%, #d7ffc3 72%, #fff2cb 100%);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.55) inset, 0 16px 45px rgba(147, 95, 255, 0.26);
+    }
+
+    .btn-primary::after {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: inherit;
+      background: linear-gradient(180deg, rgba(255,255,255,0.28), transparent 38%);
+      z-index: -1;
+    }
+
+    .btn-secondary {
+      color: rgba(248,245,255,0.95);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+      backdrop-filter: blur(14px);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px) scale(1.01);
+    }
+
+    .btn:active {
+      transform: translateY(1px) scale(0.99);
+    }
+
+    .signal-console {
+      margin: 2rem auto 0;
+      max-width: 52rem;
+      min-height: 5.75rem;
+      position: relative;
+      display: grid;
+      place-items: center;
+      padding: 0.75rem 1rem;
+    }
+
+    .signal-console::before,
+    .signal-console::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      pointer-events: none;
+    }
+
+    .signal-console::before {
+      border: 1px solid rgba(255,255,255,0.09);
+      background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      padding: 1px;
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0.8;
+    }
+
+    .signal-console::after {
+      background: radial-gradient(circle at center, rgba(116,242,255,0.14), transparent 60%);
+      filter: blur(24px);
+      opacity: 0.8;
+    }
+
+    .signal-line {
+      position: relative;
+      z-index: 1;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: clamp(0.92rem, 1.45vw, 1.06rem);
+      line-height: 1.45;
+      letter-spacing: 0.02em;
+      color: rgba(247,244,255,0.92);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      text-wrap: balance;
+    }
+
+    .prompt {
+      color: var(--cyan);
+      text-shadow: 0 0 12px rgba(116,242,255,0.42);
+      font-weight: 800;
+    }
+
+    .current-message {
+      display: inline-block;
+      min-height: 1.4em;
+    }
+
+    .pulse-dot {
+      width: 0.65rem;
+      height: 0.65rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--pink), var(--cyan));
+      box-shadow: 0 0 12px rgba(255,102,218,0.66), 0 0 22px rgba(116,242,255,0.5);
+      animation: pulse 1.8s ease-in-out infinite;
+      flex: 0 0 auto;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(0.9); opacity: 0.7; }
+      50% { transform: scale(1.18); opacity: 1; }
+    }
+
+    .support-cluster {
+      margin: 2.2rem auto 0;
+      width: min(100%, 920px);
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.95rem;
+    }
+
+    .support-chip {
+      list-style: none;
+      position: relative;
+      padding: 1rem 1rem 1.05rem;
+      border-radius: 1.2rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), var(--shadow);
+      text-align: left;
+      backdrop-filter: blur(12px);
+      min-height: 8.75rem;
+    }
+
+    .support-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(245, 240, 255, 0.72);
+      font-weight: 800;
+    }
+
+    .support-icon {
+      width: 1.5rem;
+      height: 1.5rem;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #080512;
+      background: linear-gradient(135deg, rgba(255, 190, 227, 0.95), rgba(127, 246, 255, 0.95));
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.78rem;
+      font-weight: 900;
+      box-shadow: 0 0 12px rgba(116,242,255,0.28);
+    }
+
+    .support-title {
+      margin-top: 0.72rem;
+      font-size: 1.08rem;
+      font-weight: 800;
+      color: rgba(252,251,255,0.96);
+      letter-spacing: -0.02em;
+    }
+
+    .support-copy {
+      margin-top: 0.42rem;
+      font-size: 0.94rem;
+      line-height: 1.45;
+      color: rgba(240, 235, 255, 0.72);
+    }
+
+    .fan-note {
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(240, 235, 255, 0.5);
+    }
+
+    dialog {
+      border: 0;
+      padding: 0;
+      width: min(92vw, 760px);
+      background: transparent;
+      color: inherit;
+    }
+
+    dialog::backdrop {
+      background: rgba(2, 2, 7, 0.74);
+      backdrop-filter: blur(16px);
+    }
+
+    .modal-shell {
+      position: relative;
+      overflow: hidden;
+      border-radius: 2rem;
+      border: 1px solid rgba(255,255,255,0.14);
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.10), transparent 30%),
+        linear-gradient(135deg, rgba(17, 11, 35, 0.94), rgba(8, 14, 28, 0.94));
+      box-shadow: 0 30px 90px rgba(0,0,0,0.45), 0 0 0 1px rgba(116,242,255,0.08) inset;
+      padding: 1.25rem;
+    }
+
+    .modal-shell::before {
+      content: "";
+      position: absolute;
+      inset: -30% 10% auto;
+      height: 12rem;
+      background: conic-gradient(from 90deg, rgba(255,102,218,0.5), rgba(116,242,255,0.3), rgba(141,124,255,0.34), rgba(255,102,218,0.5));
+      filter: blur(44px);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .modal-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      position: relative;
+      z-index: 1;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .modal-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: rgba(248,245,255,0.7);
+      font-weight: 800;
+    }
+
+    .close-btn {
+      width: 2.4rem;
+      height: 2.4rem;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.86);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .reel {
+      position: relative;
+      z-index: 1;
+      padding-top: 1rem;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .reel-line {
+      min-height: 8.5rem;
+      display: grid;
+      align-items: center;
+      padding: 1.25rem 0.25rem 0.5rem;
+      font-size: clamp(1.8rem, 4vw, 3.3rem);
+      line-height: 1.05;
+      letter-spacing: -0.05em;
+      font-weight: 850;
+      text-wrap: balance;
+    }
+
+    .reel-line span {
+      background: linear-gradient(100deg, #fff4fa, #ff99e5 20%, #91f9ff 45%, #d8ffc7 64%, #fff0c5 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 24px rgba(116,242,255,0.12);
+    }
+
+    .reel-sub {
+      font-size: 0.98rem;
+      line-height: 1.6;
+      color: rgba(239,234,255,0.78);
+      max-width: 44rem;
+    }
+
+    .reel-meter {
+      display: grid;
+      grid-template-columns: repeat(24, minmax(0, 1fr));
+      gap: 0.35rem;
+      height: 3.25rem;
+      align-items: end;
+    }
+
+    .reel-meter span {
+      border-radius: 999px;
+      min-height: 0.45rem;
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(116,242,255,0.5));
+      box-shadow: 0 0 12px rgba(116,242,255,0.14);
+      transform-origin: bottom;
+      animation: meter 1300ms ease-in-out infinite;
+      animation-delay: calc(var(--i) * 45ms);
+      opacity: 0.9;
+    }
+
+    @keyframes meter {
+      0%, 100% { transform: scaleY(0.35); opacity: 0.55; }
+      50% { transform: scaleY(1); opacity: 1; }
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      padding-top: 0.3rem;
+    }
+
+    .mini-note {
+      color: rgba(239,234,255,0.58);
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .ghost-link {
+      padding: 0.9rem 1.1rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.92);
+      border: 1px solid rgba(255,255,255,0.12);
+      font-weight: 800;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 860px) {
+      .hero {
+        min-height: auto;
+        padding-block: 5rem 3rem;
+      }
+
+      .support-cluster {
+        grid-template-columns: 1fr;
+      }
+
+      .support-chip {
+        min-height: 0;
+      }
+
+      .signal-word {
+        font-size: clamp(5rem, 22vw, 9rem);
+      }
+    }
+
+    @media (max-width: 560px) {
+      .eyebrow {
+        padding-inline: 0.8rem;
+        font-size: 0.72rem;
+        gap: 0.55rem;
+      }
+
+      h1 {
+        font-size: clamp(3rem, 16vw, 4.6rem);
+      }
+
+      .supporting-copy {
+        font-size: 1rem;
+      }
+
+      .btn {
+        width: min(100%, 20rem);
+      }
+
+      .reel-line {
+        min-height: 7rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+
+      .hero-inner {
+        transform: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="rings" aria-hidden="true"></div>
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span>// typesafe banter uplink // ship the thing // ahrr protocol // stack opinions online //</span>
+      <span>// typesafe banter uplink // ship the thing // ahrr protocol // stack opinions online //</span>
+      <span>// typesafe banter uplink // ship the thing // ahrr protocol // stack opinions online //</span>
+    </div>
+  </div>
+  <div class="signal-word" aria-hidden="true"><span>AHRR</span></div>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-inner" id="heroInner">
+        <div class="eyebrow">
+          <span class="eyebrow-mark" aria-hidden="true"></span>
+          <span>Theo Survival Kit // unofficial fan concept</span>
+        </div>
+
+        <h1 id="hero-title">
+          <span class="headline-base">Rant Better.</span><br />
+          <span class="headline-accent" data-text="Ship Typesafe.">Ship Typesafe.</span>
+        </h1>
+
+        <p class="supporting-copy">
+          A holographic tribute for <strong>TypeScript goblins, AI doomscrollers, and framework maximalists</strong> who want Theo-grade banter, loud opinions, and one clean excuse to stop overengineering by accident.
+        </p>
+
+        <div class="cta-row" aria-label="Primary calls to action">
+          <button class="btn btn-primary" id="openReel" type="button">Boot the Rant Reel</button>
+          <button class="btn btn-secondary" id="toggleDogma" type="button">Read the Stack Dogma</button>
+        </div>
+
+        <div class="signal-console" aria-live="polite">
+          <div class="signal-line">
+            <span class="pulse-dot" aria-hidden="true"></span>
+            <span class="prompt">Theo.signal&gt;</span>
+            <span class="current-message" id="signalMessage">Loading developer coping mechanism...</span>
+          </div>
+        </div>
+
+        <ul class="support-cluster" aria-label="Support highlights">
+          <li class="support-chip">
+            <div class="support-kicker"><span class="support-icon" aria-hidden="true">&gt;_</span> Signal One</div>
+            <div class="support-title">Opinionated by design</div>
+            <div class="support-copy">No beige productivity sludge. Just sharp stack takes, chaotic clarity, and enough pushback to make your architecture choices sweat.</div>
+          </li>
+          <li class="support-chip">
+            <div class="support-kicker"><span class="support-icon" aria-hidden="true">//</span> Signal Two</div>
+            <div class="support-title">AI panic, translated</div>
+            <div class="support-copy">Turns model drama, tool hype, and timeline nonsense into something a working developer can actually use without needing six browser tabs.</div>
+          </li>
+          <li class="support-chip">
+            <div class="support-kicker"><span class="support-icon" aria-hidden="true">&lt;&gt;</span> Signal Three</div>
+            <div class="support-title">Typesafe emotional support</div>
+            <div class="support-copy">For the people who know “just use JavaScript” is technically legal, spiritually cursed, and somehow still being said with confidence.</div>
+          </li>
+        </ul>
+
+        <div class="fan-note">No fake stats. No fake screenshots. Just vibes, gradients, and respectful slander.</div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="reelDialog" aria-labelledby="reelTitle">
+    <div class="modal-shell">
+      <div class="modal-topbar">
+        <div class="modal-label">
+          <span class="eyebrow-mark" aria-hidden="true"></span>
+          <span id="reelTitle">Rant Reel Uplink</span>
+        </div>
+        <button class="close-btn" id="closeReel" type="button" aria-label="Close rant reel">✕</button>
+      </div>
+
+      <div class="reel">
+        <div class="reel-line" aria-live="polite"><span id="reelText">Initializing ahrr.core...</span></div>
+        <div class="reel-sub" id="reelSub">
+          The internet is loud. Your stack does not need to be dumb on purpose.
+        </div>
+        <div class="reel-meter" aria-hidden="true" id="reelMeter"></div>
+        <div class="modal-actions">
+          <div class="mini-note">Warning: elevated levels of TypeScript righteousness detected.</div>
+          <button class="ghost-link" id="shuffleReel" type="button">Hit Me With Another Rant</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    const body = document.body;
+    const heroInner = document.getElementById('heroInner');
+    const signalMessage = document.getElementById('signalMessage');
+    const openReel = document.getElementById('openReel');
+    const toggleDogma = document.getElementById('toggleDogma');
+    const reelDialog = document.getElementById('reelDialog');
+    const closeReel = document.getElementById('closeReel');
+    const reelText = document.getElementById('reelText');
+    const reelSub = document.getElementById('reelSub');
+    const shuffleReel = document.getElementById('shuffleReel');
+    const reelMeter = document.getElementById('reelMeter');
+
+    const signalLines = [
+      'Typesafety still isn\'t optional. Sorry to your vibes-based repo.',
+      'Bleed responsibly. The keyword is responsibly. Please breathe.',
+      'Bring your own libraries. Bring less of them, actually.',
+      'AHRR detected. Converting outrage into deployable architecture.',
+      'This framework discourse could have been one well-typed function.',
+      'JS is freedom. TS is what happens when freedom gets a job.',
+      'Your side project is not blocked. You are just tab-maxxing again.'
+    ];
+
+    const dogmaLines = [
+      'Rule 01 // Ship before the discourse thread reaches page two.',
+      'Rule 02 // If the abstraction needs a TED Talk, it probably needs deleting.',
+      'Rule 03 // Use the bleeding edge, not the hemorrhaging edge.',
+      'Rule 04 // Add fewer libraries and more actual product.',
+      'Rule 05 // If AI wrote it, you still own the bug report, chief.'
+    ];
+
+    const rantShots = [
+      {
+        title: 'This stack take needed less philosophy and more TypeScript.',
+        sub: 'Calm down, remove three dependencies, name the function properly, and suddenly the apocalypse becomes a sprint ticket.'
+      },
+      {
+        title: 'AHRR. You do not need a distributed system for a landing page.',
+        sub: 'Sometimes the senior move is not adding Kafka to a side project that currently has zero users and one emotional support endpoint.'
+      },
+      {
+        title: 'Yes, AI is real. No, that does not make bad code avant-garde.',
+        sub: 'Tooling should increase leverage, not generate twelve files of suspicious confidence and one very cursed env example.'
+      },
+      {
+        title: 'The framework is not your personality. The shipped product is closer.',
+        sub: 'Arguing about abstractions for six hours is still procrastination even when the repo has tasteful gradients.'
+      },
+      {
+        title: 'You can vibe-code. You cannot vibe-maintain. That bill arrives later.',
+        sub: 'Keep the fun. Keep the speed. Also keep enough structure that Future You does not file a restraining order.'
+      }
+    ];
+
+    let signalIndex = 0;
+    let dogmaIndex = 0;
+    let signalTimer;
+
+    function cycleSignal() {
+      signalIndex = (signalIndex + 1) % signalLines.length;
+      signalMessage.textContent = signalLines[signalIndex];
+    }
+
+    signalMessage.textContent = signalLines[0];
+    signalTimer = window.setInterval(cycleSignal, 2800);
+
+    function setPointerEffects(event) {
+      const x = (event.clientX / window.innerWidth) * 100;
+      const y = (event.clientY / window.innerHeight) * 100;
+      body.style.setProperty('--mouse-x', `${x}%`);
+      body.style.setProperty('--mouse-y', `${y}%`);
+
+      const rect = heroInner.getBoundingClientRect();
+      const localX = ((event.clientX - rect.left) / rect.width) - 0.5;
+      const localY = ((event.clientY - rect.top) / rect.height) - 0.5;
+      const tiltY = Math.max(-5, Math.min(5, localX * 8));
+      const tiltX = Math.max(-4, Math.min(4, -localY * 6));
+      body.style.setProperty('--tilt-x', `${tiltX}deg`);
+      body.style.setProperty('--tilt-y', `${tiltY}deg`);
+    }
+
+    function resetTilt() {
+      body.style.setProperty('--tilt-x', '0deg');
+      body.style.setProperty('--tilt-y', '0deg');
+    }
+
+    function scrambleTo(el, target) {
+      const chars = '!<>-_\\/[]{}—=+*^?#________';
+      let frame = 0;
+      const totalFrames = 18;
+      const source = target.split('');
+      const tick = () => {
+        const output = source.map((char, i) => {
+          if (i < frame / 1.75) return char;
+          if (char === ' ') return ' ';
+          return chars[Math.floor(Math.random() * chars.length)];
+        }).join('');
+        el.textContent = output;
+        frame += 1;
+        if (frame <= totalFrames) requestAnimationFrame(tick);
+        else el.textContent = target;
+      };
+      tick();
+    }
+
+    function updateDogma() {
+      dogmaIndex = (dogmaIndex + 1) % dogmaLines.length;
+      scrambleTo(signalMessage, dogmaLines[dogmaIndex]);
+    }
+
+    function buildMeter() {
+      reelMeter.innerHTML = '';
+      for (let i = 0; i < 24; i += 1) {
+        const bar = document.createElement('span');
+        bar.style.setProperty('--i', i);
+        bar.style.height = `${30 + ((i * 13) % 62)}%`;
+        reelMeter.appendChild(bar);
+      }
+    }
+
+    function randomRant() {
+      const item = rantShots[Math.floor(Math.random() * rantShots.length)];
+      scrambleTo(reelText, item.title);
+      reelSub.textContent = item.sub;
+    }
+
+    openReel.addEventListener('click', () => {
+      if (typeof reelDialog.showModal === 'function') {
+        reelDialog.showModal();
+      } else {
+        reelDialog.setAttribute('open', 'true');
+      }
+      randomRant();
+      buildMeter();
+    });
+
+    closeReel.addEventListener('click', () => reelDialog.close());
+    shuffleReel.addEventListener('click', randomRant);
+    toggleDogma.addEventListener('click', updateDogma);
+
+    reelDialog.addEventListener('click', (event) => {
+      const rect = reelDialog.querySelector('.modal-shell').getBoundingClientRect();
+      const inside = (
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right &&
+        event.clientY >= rect.top &&
+        event.clientY <= rect.bottom
+      );
+      if (!inside) reelDialog.close();
+    });
+
+    window.addEventListener('mousemove', setPointerEffects, { passive: true });
+    heroInner.addEventListener('mouseleave', resetTilt);
+
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && reelDialog.hasAttribute('open')) {
+        reelDialog.close();
+      }
+    });
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      window.clearInterval(signalTimer);
+      signalMessage.textContent = signalLines[0];
+    }
+  </script>
+</body>
+</html>

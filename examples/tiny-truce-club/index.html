@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Tiny Truce Club</title>
+  <style>
+    :root {
+      --paper: #f9f4ea;
+      --paper-deep: #efe4d2;
+      --ink: #1f2430;
+      --ink-soft: #4f5665;
+      --tomato: #f26d4a;
+      --sky: #5c7cff;
+      --mint: #94b85c;
+      --jam: #b2495f;
+      --line: rgba(31, 36, 48, 0.14);
+      --surface: rgba(255, 255, 255, 0.46);
+      --shadow: 0 24px 60px rgba(38, 30, 24, 0.08);
+      --radius: 22px;
+      --max: 1200px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(242, 109, 74, 0.18), transparent 28%),
+        radial-gradient(circle at 82% 16%, rgba(92, 124, 255, 0.16), transparent 24%),
+        radial-gradient(circle at 70% 72%, rgba(148, 184, 92, 0.14), transparent 20%),
+        linear-gradient(180deg, #fbf7f0 0%, #f8f1e7 46%, #f2e7d7 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.3;
+      background-image:
+        linear-gradient(rgba(31, 36, 48, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(31, 36, 48, 0.012) 1px, transparent 1px);
+      background-size: 100% 28px, 28px 100%;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.45), transparent 85%);
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.08;
+      background-image:
+        radial-gradient(circle at 20% 30%, #000 0.6px, transparent 0.8px),
+        radial-gradient(circle at 80% 40%, #000 0.7px, transparent 1px),
+        radial-gradient(circle at 60% 70%, #000 0.7px, transparent 1px);
+      background-size: 110px 110px, 150px 150px, 130px 130px;
+      mix-blend-mode: multiply;
+    }
+
+    .page {
+      min-height: 100vh;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: grid;
+      align-items: center;
+      padding: 32px 22px 28px;
+      overflow: clip;
+    }
+
+    .hero-inner {
+      width: min(100%, var(--max));
+      margin: 0 auto;
+      display: grid;
+      gap: 32px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      width: fit-content;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .brand-mark {
+      width: 14px;
+      height: 14px;
+      border-radius: 50% 46% 57% 43%;
+      background:
+        radial-gradient(circle at 30% 30%, #fff8, transparent 35%),
+        linear-gradient(135deg, var(--tomato), var(--sky));
+      box-shadow: 0 0 0 5px rgba(255,255,255,0.35);
+      animation: wobble 6s ease-in-out infinite;
+    }
+
+    .hero-copy {
+      max-width: 860px;
+      position: relative;
+    }
+
+    .eyebrow {
+      margin: 0 0 14px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--jam);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(3.2rem, 9vw, 7.8rem);
+      line-height: 0.93;
+      letter-spacing: -0.055em;
+      font-weight: 900;
+      max-width: 10ch;
+      text-wrap: balance;
+      position: relative;
+    }
+
+    .warm {
+      color: var(--tomato);
+    }
+
+    .wild {
+      color: transparent;
+      -webkit-text-stroke: 2px var(--sky);
+      text-stroke: 2px var(--sky);
+      font-style: italic;
+      position: relative;
+      display: inline-block;
+      transform-origin: center;
+      animation: jostle 4.2s ease-in-out infinite;
+      text-shadow:
+        0.045em 0.025em 0 rgba(242, 109, 74, 0.18),
+        -0.03em -0.018em 0 rgba(148, 184, 92, 0.16);
+    }
+
+    .headline-scribble {
+      position: absolute;
+      left: -0.2em;
+      bottom: -0.12em;
+      width: 4.8em;
+      height: 0.48em;
+      border-bottom: 5px solid rgba(242, 109, 74, 0.32);
+      border-radius: 999px;
+      transform: rotate(-2deg);
+      pointer-events: none;
+    }
+
+    .supporting-copy {
+      margin: 24px 0 0;
+      max-width: 630px;
+      font-size: clamp(1.05rem, 2vw, 1.3rem);
+      line-height: 1.5;
+      color: var(--ink-soft);
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 28px;
+      align-items: center;
+    }
+
+    button {
+      appearance: none;
+      border: none;
+      border-radius: 999px;
+      padding: 15px 22px;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      cursor: pointer;
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease, color 180ms ease, border-color 180ms ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:focus-visible {
+      outline: 3px solid var(--sky);
+      outline-offset: 4px;
+    }
+
+    .primary {
+      background: var(--ink);
+      color: #fff;
+      box-shadow: 0 16px 34px rgba(31, 36, 48, 0.18);
+    }
+
+    .primary:hover {
+      box-shadow: 0 20px 40px rgba(31, 36, 48, 0.24);
+    }
+
+    .secondary {
+      background: transparent;
+      color: var(--ink);
+      border: 2px solid rgba(31, 36, 48, 0.16);
+    }
+
+    .secondary:hover {
+      border-color: rgba(31, 36, 48, 0.32);
+      background: rgba(255,255,255,0.32);
+    }
+
+    .live-line {
+      margin-top: 16px;
+      min-height: 1.7em;
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 720px;
+    }
+
+    .live-line::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--mint);
+      box-shadow: 0 0 0 6px rgba(148, 184, 92, 0.18);
+      flex: 0 0 auto;
+    }
+
+    .chaos-field {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .blot {
+      position: absolute;
+      border-radius: 48% 52% 58% 42% / 42% 45% 55% 58%;
+      filter: blur(2px);
+      opacity: 0.72;
+      mix-blend-mode: multiply;
+    }
+
+    .blot-a {
+      width: 380px;
+      height: 380px;
+      left: -90px;
+      top: 120px;
+      background: radial-gradient(circle at 38% 38%, rgba(242, 109, 74, 0.18), rgba(242, 109, 74, 0.04) 66%, transparent 72%);
+      animation: drift 16s ease-in-out infinite alternate;
+    }
+
+    .blot-b {
+      width: 360px;
+      height: 360px;
+      right: -80px;
+      top: 80px;
+      background: radial-gradient(circle at 55% 45%, rgba(92, 124, 255, 0.18), rgba(92, 124, 255, 0.03) 66%, transparent 72%);
+      animation: drift 19s ease-in-out infinite alternate-reverse;
+    }
+
+    .blot-c {
+      width: 260px;
+      height: 260px;
+      right: 12%;
+      bottom: 14%;
+      background: radial-gradient(circle at 55% 45%, rgba(148, 184, 92, 0.16), rgba(148, 184, 92, 0.03) 66%, transparent 72%);
+      animation: drift 13s ease-in-out infinite alternate;
+    }
+
+    .note {
+      position: absolute;
+      font-size: clamp(0.82rem, 1.2vw, 0.98rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(31, 36, 48, 0.54);
+      transform-origin: center;
+      animation: floaty 8s ease-in-out infinite;
+      max-width: 18ch;
+    }
+
+    .note::before {
+      content: "";
+      position: absolute;
+      inset: 0.2em -0.35em -0.12em;
+      z-index: -1;
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.42));
+      transform: skewX(-10deg);
+      opacity: 0.8;
+    }
+
+    .note span {
+      color: var(--jam);
+    }
+
+    .n1 { left: 7%; top: 23%; transform: rotate(-8deg); animation-delay: -1.3s; }
+    .n2 { right: 10%; top: 20%; transform: rotate(9deg); animation-delay: -3.2s; }
+    .n3 { left: 8%; bottom: 24%; transform: rotate(5deg); animation-delay: -2.4s; }
+    .n4 { right: 18%; bottom: 28%; transform: rotate(-6deg); animation-delay: -4.1s; }
+    .n5 { left: 42%; top: 9%; transform: rotate(-3deg); animation-delay: -2.8s; }
+    .n6 { right: 4%; top: 48%; transform: rotate(7deg); animation-delay: -5.2s; }
+
+    .squiggle {
+      position: absolute;
+      width: 130px;
+      height: 28px;
+      border-top: 4px solid rgba(31, 36, 48, 0.18);
+      border-radius: 50%;
+      opacity: 0.5;
+      animation: wiggleLine 10s ease-in-out infinite;
+    }
+
+    .sq1 { top: 16%; right: 31%; transform: rotate(14deg); }
+    .sq2 { bottom: 16%; left: 24%; transform: rotate(-11deg); animation-delay: -2s; }
+    .sq3 { top: 50%; left: 6%; transform: rotate(7deg); width: 88px; animation-delay: -4s; }
+
+    .support-cluster {
+      width: min(100%, var(--max));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      position: relative;
+      z-index: 2;
+      align-self: end;
+    }
+
+    .support-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: start;
+      padding: 18px 18px 17px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+    }
+
+    .support-item svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--ink);
+      stroke-width: 2;
+      fill: none;
+      opacity: 0.9;
+      flex: 0 0 auto;
+      margin-top: 1px;
+    }
+
+    .support-label {
+      margin: 0 0 4px;
+      font-size: 0.98rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .support-text {
+      margin: 0;
+      font-size: 0.94rem;
+      line-height: 1.45;
+      color: var(--ink-soft);
+    }
+
+    .burst .note,
+    .burst .brand-mark {
+      animation-duration: 0.9s !important;
+    }
+
+    @keyframes drift {
+      0% { transform: translate3d(0, 0, 0) scale(1); }
+      100% { transform: translate3d(12px, -14px, 0) scale(1.05); }
+    }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+      50% { transform: translateY(-10px) rotate(calc(var(--r, 0deg) + 2deg)); }
+    }
+
+    @keyframes wobble {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      30% { transform: rotate(7deg) scale(1.04); }
+      70% { transform: rotate(-6deg) scale(0.98); }
+    }
+
+    @keyframes wiggleLine {
+      0%, 100% { transform: translateY(0) rotate(var(--line-rot, 0deg)); }
+      50% { transform: translateY(-6px) rotate(calc(var(--line-rot, 0deg) + 2deg)); }
+    }
+
+    @keyframes jostle {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      30% { transform: translateY(-1px) rotate(0.8deg); }
+      70% { transform: translateY(1px) rotate(-0.8deg); }
+    }
+
+    @media (max-width: 980px) {
+      .hero {
+        padding-top: 28px;
+      }
+
+      .support-cluster {
+        grid-template-columns: 1fr;
+      }
+
+      .n5, .n6 {
+        display: none;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .hero {
+        min-height: auto;
+        padding-bottom: 22px;
+      }
+
+      h1 {
+        max-width: 11ch;
+        font-size: clamp(2.9rem, 13vw, 4.9rem);
+      }
+
+      .supporting-copy {
+        max-width: 38ch;
+      }
+
+      .cta-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      button {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .note {
+        font-size: 0.78rem;
+        max-width: 14ch;
+      }
+
+      .n1 { left: 2%; top: 20%; }
+      .n2 { right: 2%; top: 15%; }
+      .n3 { left: 2%; bottom: 31%; }
+      .n4 { right: 3%; bottom: 28%; }
+      .sq1, .sq2, .sq3 {
+        opacity: 0.35;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="chaos-field" aria-hidden="true">
+        <div class="blot blot-a"></div>
+        <div class="blot blot-b"></div>
+        <div class="blot blot-c"></div>
+
+        <div class="note n1" style="--r:-8deg;">Why is <span>this</span> wet?</div>
+        <div class="note n2" style="--r:9deg;">Snack tribunal<br />starts now</div>
+        <div class="note n3" style="--r:5deg;">Nap status:<br /><span>denied</span></div>
+        <div class="note n4" style="--r:-6deg;">One tiny sock.<br />No known owner.</div>
+        <div class="note n5" style="--r:-3deg;">Emotional support<br />banana required</div>
+        <div class="note n6" style="--r:7deg;">Bedtime has entered<br /><span>overtime</span></div>
+
+        <div class="squiggle sq1" style="--line-rot:14deg;"></div>
+        <div class="squiggle sq2" style="--line-rot:-11deg;"></div>
+        <div class="squiggle sq3" style="--line-rot:7deg;"></div>
+      </div>
+
+      <div class="hero-inner">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>The Tiny Truce Club</span>
+        </div>
+
+        <div class="hero-copy">
+          <p class="eyebrow">For parents of small chaos agents</p>
+          <h1 id="hero-title">
+            Parenting is <span class="warm">beautiful.</span><br />
+            And absolutely <span class="wild">feral</span>.
+            <span class="headline-scribble" aria-hidden="true"></span>
+          </h1>
+
+          <p class="supporting-copy">
+            Some days you are a loving guide. Some days you are negotiating with a barefoot dictator at 6:12 a.m. The Tiny Truce Club gives tired parents short scripts, fast resets, and practical backup for the loud parts.
+          </p>
+
+          <div class="cta-row">
+            <button class="primary" id="kitButton" type="button">Join the Tiny Truce Club</button>
+            <button class="secondary" id="scriptButton" type="button">Read a Sample Meltdown Script</button>
+          </div>
+
+          <div class="live-line" id="liveLine" aria-live="polite">
+            Backup available: fewer guilt spirals, better words, one small truce at a time.
+          </div>
+        </div>
+
+        <div class="support-cluster" aria-label="What you get">
+          <article class="support-item">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 3h10v5H7z"></path>
+              <path d="M9 8v3"></path>
+              <path d="M15 8v3"></path>
+              <path d="M5 14a7 7 0 1 0 14 0H5z"></path>
+            </svg>
+            <div>
+              <p class="support-label">Short scripts for long days</p>
+              <p class="support-text">Practical lines for meltdowns, bedtime standoffs, public chaos, and the snack disputes nobody warned you about.</p>
+            </div>
+          </article>
+
+          <article class="support-item">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="8"></circle>
+              <path d="M12 7v5l3 2"></path>
+              <path d="M12 2v2"></path>
+            </svg>
+            <div>
+              <p class="support-label">Fast resets, not perfect-parent cosplay</p>
+              <p class="support-text">Five-minute routines for the moments when everyone is running on crumbs, static, and an increasingly fragile sense of teamwork.</p>
+            </div>
+          </article>
+
+          <article class="support-item">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 21s-6-3.4-6-9a4 4 0 0 1 6-3.4A4 4 0 0 1 18 12c0 5.6-6 9-6 9z"></path>
+              <path d="M9 12h6"></path>
+            </svg>
+            <div>
+              <p class="support-label">Real help for real homes</p>
+              <p class="support-text">No fake serenity, no invented proof, no polished-parent nonsense. Just useful backup for people doing a hard job on very little sleep.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const liveLine = document.getElementById("liveLine");
+    const kitButton = document.getElementById("kitButton");
+    const scriptButton = document.getElementById("scriptButton");
+    const page = document.querySelector(".page");
+
+    const kitMessages = [
+      "Survival kit packed: bedtime scripts, grocery-store diplomacy, and one calm voice you can borrow.",
+      "Backup loaded: tiny routines for giant feelings and two adults running on crumbs.",
+      "Ready for deployment: better words, less spiraling, and an emergency snack treaty."
+    ];
+
+    const scriptMessages = [
+      "Sample meltdown script: “You can be furious, and we are still leaving the playground.”",
+      "Sample bedtime line: “I will do one more tuck-in, not seven surprise sequels.”",
+      "Sample snack diplomacy: “You may dislike the banana. You may not declare war on the banana.”"
+    ];
+
+    let kitIndex = 0;
+    let scriptIndex = 0;
+
+    function pulseScene() {
+      page.classList.add("burst");
+      window.setTimeout(() => page.classList.remove("burst"), 850);
+    }
+
+    kitButton.addEventListener("click", () => {
+      liveLine.textContent = kitMessages[kitIndex];
+      kitIndex = (kitIndex + 1) % kitMessages.length;
+      pulseScene();
+    });
+
+    scriptButton.addEventListener("click", () => {
+      liveLine.textContent = scriptMessages[scriptIndex];
+      scriptIndex = (scriptIndex + 1) % scriptMessages.length;
+      pulseScene();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ship Happens - Meme-Worthy Bug Tracker</title>
+  <meta name="description" content="Ship Happens is a meme-worthy bug tracker for developers who want issue triage to feel fast, legible, and less joyless.">
+  <style>
+    :root {
+      --ink: #151821;
+      --ink-soft: #3b4050;
+      --paper: #fff8dc;
+      --paper-hot: #ffe875;
+      --green: #17ad73;
+      --coral: #ff5964;
+      --blue: #2667ff;
+      --violet: #7b3ff2;
+      --shadow: rgba(21, 24, 33, 0.2);
+      --line: rgba(21, 24, 33, 0.2);
+      --terminal: #18202b;
+      --terminal-soft: #263344;
+      --focus: #005fcc;
+      color-scheme: light;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-width: 320px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(21, 24, 33, 0.052) 1px, transparent 1px) 0 0 / 36px 36px,
+        linear-gradient(rgba(21, 24, 33, 0.052) 1px, transparent 1px) 0 0 / 36px 36px,
+        radial-gradient(circle at 82% 18%, rgba(255, 89, 100, 0.23), transparent 24rem),
+        radial-gradient(circle at 13% 76%, rgba(23, 173, 115, 0.22), transparent 22rem),
+        linear-gradient(135deg, #fffdf0 0%, #fff3a6 47%, #f6fbff 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.54;
+      background-image:
+        repeating-linear-gradient(-13deg, transparent 0 20px, rgba(21, 24, 33, 0.05) 21px 22px),
+        linear-gradient(120deg, transparent 0 55%, rgba(38, 103, 255, 0.08) 55% 61%, transparent 61%);
+      mix-blend-mode: multiply;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 4px;
+    }
+
+    .page {
+      position: relative;
+      min-height: 100vh;
+      isolation: isolate;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 22px 0 10px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink);
+      font-weight: 900;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      color: #fffbe6;
+      background: var(--ink);
+      border: 2px solid var(--ink);
+      box-shadow: 5px 5px 0 var(--coral);
+      transform: rotate(-3deg);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: clamp(12px, 2vw, 28px);
+      color: var(--ink-soft);
+      font-size: 0.92rem;
+      font-weight: 800;
+    }
+
+    .nav a {
+      border-bottom: 2px solid transparent;
+      padding-block: 5px;
+    }
+
+    .nav a:hover {
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 0.87fr) minmax(420px, 1.13fr);
+      align-items: center;
+      gap: clamp(28px, 5vw, 70px);
+      min-height: calc(100svh - 140px);
+      padding: clamp(24px, 3.8vw, 54px) 0 22px;
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 3;
+      max-width: 615px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 0 18px;
+      padding: 8px 11px;
+      border: 2px solid var(--ink);
+      color: var(--ink);
+      background: #fffdf2;
+      box-shadow: 4px 4px 0 var(--green);
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "!";
+      display: grid;
+      place-items: center;
+      width: 20px;
+      height: 20px;
+      color: #fffbe8;
+      background: var(--coral);
+      border-radius: 50%;
+      font-family: inherit;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 680px;
+      color: var(--ink);
+      font-size: clamp(3.1rem, 6.4vw, 6.55rem);
+      line-height: 0.88;
+      letter-spacing: 0;
+      text-wrap: balance;
+      font-weight: 1000;
+    }
+
+    .brand-word {
+      display: inline-block;
+      color: var(--blue);
+      text-shadow: 4px 4px 0 #ffed6d;
+      transform: rotate(-1.5deg);
+    }
+
+    .bug-word {
+      position: relative;
+      display: inline-block;
+      color: var(--coral);
+    }
+
+    .bug-word::after {
+      content: "";
+      position: absolute;
+      left: 0.03em;
+      right: -0.05em;
+      bottom: 0.03em;
+      height: 0.14em;
+      z-index: -1;
+      background: var(--paper-hot);
+      transform: rotate(-2deg);
+      border: 2px solid rgba(21, 24, 33, 0.18);
+    }
+
+    .bug-word:hover {
+      animation: jitter 0.38s steps(2, end) 1;
+    }
+
+    .lede {
+      margin: 24px 0 0;
+      max-width: 570px;
+      color: var(--ink-soft);
+      font-size: clamp(1.04rem, 2vw, 1.24rem);
+      line-height: 1.55;
+      font-weight: 660;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 30px;
+    }
+
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      border: 2px solid var(--ink);
+      padding: 0 20px;
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 950;
+      letter-spacing: 0;
+      box-shadow: 6px 6px 0 var(--ink);
+      transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
+    }
+
+    .cta:hover {
+      transform: translate(3px, 3px);
+      box-shadow: 3px 3px 0 var(--ink);
+    }
+
+    .cta:active {
+      transform: translate(6px, 6px);
+      box-shadow: 0 0 0 var(--ink);
+    }
+
+    .cta-primary {
+      background: var(--green);
+      color: #fffdf2;
+    }
+
+    .cta-secondary {
+      background: #fffdf2;
+    }
+
+    .microcopy {
+      margin: 16px 0 0;
+      color: rgba(21, 24, 33, 0.68);
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .board-wrap {
+      position: relative;
+      min-height: 570px;
+      display: grid;
+      align-items: center;
+    }
+
+    .board-wrap::before {
+      content: "TRIAGE THE CHAOS";
+      position: absolute;
+      top: 18px;
+      left: -18px;
+      z-index: -1;
+      width: 240px;
+      padding: 9px 14px;
+      color: var(--ink);
+      background: var(--paper-hot);
+      border: 2px solid var(--ink);
+      box-shadow: 5px 5px 0 var(--coral);
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-weight: 900;
+      text-align: center;
+      transform: rotate(-8deg);
+    }
+
+    .board {
+      position: relative;
+      width: min(100%, 675px);
+      margin-left: auto;
+      color: #eaf5ff;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.09), transparent 34%),
+        radial-gradient(circle at 78% 0%, rgba(255, 89, 100, 0.3), transparent 32%),
+        var(--terminal);
+      border: 3px solid var(--ink);
+      box-shadow: 18px 18px 0 rgba(21, 24, 33, 0.95);
+      transform: rotate(1.4deg);
+      overflow: hidden;
+    }
+
+    .board::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.035) 50%, transparent 50%) 0 0 / 100% 4px,
+        radial-gradient(circle at var(--spark-x, 82%) var(--spark-y, 28%), rgba(255, 232, 117, 0.32), transparent 17rem);
+      opacity: 0.8;
+      mix-blend-mode: screen;
+    }
+
+    .board-head {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 18px;
+      border-bottom: 2px solid rgba(234, 245, 255, 0.14);
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 13px;
+    }
+
+    .window-dots span {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--coral);
+      box-shadow: 21px 0 0 var(--paper-hot), 42px 0 0 var(--green);
+    }
+
+    .board-title {
+      margin: 0;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: clamp(1.05rem, 1.9vw, 1.28rem);
+      font-weight: 900;
+    }
+
+    .board-sub {
+      margin: 5px 0 0;
+      color: rgba(234, 245, 255, 0.68);
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .panic {
+      width: 152px;
+      justify-self: end;
+    }
+
+    .panic-label {
+      display: flex;
+      justify-content: space-between;
+      color: rgba(234, 245, 255, 0.82);
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.68rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .panic-track {
+      height: 13px;
+      margin-top: 7px;
+      border: 2px solid rgba(234, 245, 255, 0.38);
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .panic-fill {
+      width: 76%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--green), var(--paper-hot), var(--coral));
+      transform-origin: left;
+      animation: pulse-meter 2.8s ease-in-out infinite;
+      transition: width 260ms ease;
+    }
+
+    .lanes {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 13px;
+      padding: 16px;
+    }
+
+    .lane {
+      min-width: 0;
+    }
+
+    .lane-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      min-height: 32px;
+      color: rgba(234, 245, 255, 0.76);
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.73rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .lane-count {
+      color: var(--terminal);
+      background: var(--paper-hot);
+      padding: 2px 6px;
+      border-radius: 999px;
+    }
+
+    .ticket-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .ticket {
+      position: relative;
+      min-height: 116px;
+      padding: 13px 12px 12px;
+      border: 2px solid rgba(234, 245, 255, 0.17);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
+      overflow: hidden;
+      transform: translateY(0);
+      animation: ticket-float 6s ease-in-out infinite;
+      animation-delay: var(--delay, 0s);
+    }
+
+    .ticket::before {
+      content: attr(data-tag);
+      display: inline-flex;
+      margin-bottom: 10px;
+      padding: 3px 7px;
+      color: var(--terminal);
+      background: var(--tag, var(--paper-hot));
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.66rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .ticket h3 {
+      margin: 0;
+      color: #fffdf2;
+      font-size: clamp(0.86rem, 1.2vw, 0.98rem);
+      line-height: 1.17;
+      letter-spacing: 0;
+      font-weight: 900;
+    }
+
+    .ticket p {
+      margin: 8px 0 0;
+      color: rgba(234, 245, 255, 0.64);
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.68rem;
+      line-height: 1.4;
+    }
+
+    .ticket.new {
+      animation: pop-ticket 520ms cubic-bezier(.2, 1.35, .4, 1) 1;
+      border-color: var(--paper-hot);
+      box-shadow: 0 0 0 4px rgba(255, 232, 117, 0.22), 0 16px 32px rgba(0, 0, 0, 0.23);
+    }
+
+    .ticket:nth-child(2n) {
+      --tag: var(--green);
+    }
+
+    .ticket:nth-child(3n) {
+      --tag: var(--coral);
+    }
+
+    .delay-a {
+      --delay: -0.8s;
+    }
+
+    .delay-b {
+      --delay: -1.7s;
+    }
+
+    .delay-c {
+      --delay: -2.2s;
+    }
+
+    .delay-d {
+      --delay: -3s;
+    }
+
+    .delay-e {
+      --delay: -1.2s;
+    }
+
+    .terminal-line {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      padding: 0 18px 18px;
+      color: #a8ffc7;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .terminal-line .cursor {
+      display: inline-block;
+      width: 0.62em;
+      height: 1em;
+      margin-left: 3px;
+      background: #a8ffc7;
+      vertical-align: -0.18em;
+      animation: blink 1s steps(2, end) infinite;
+    }
+
+    .support {
+      padding: 4px 0 clamp(48px, 7vw, 84px);
+    }
+
+    .support-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .support-item {
+      min-width: 0;
+      min-height: 150px;
+      padding: 20px;
+      border: 2px solid var(--line);
+      background: rgba(255, 253, 242, 0.72);
+      box-shadow: 5px 5px 0 rgba(21, 24, 33, 0.12);
+      transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .support-item.is-lit {
+      border-color: var(--ink);
+      box-shadow: 7px 7px 0 var(--green);
+      transform: translateY(-3px);
+    }
+
+    .support-kicker {
+      display: inline-block;
+      margin-bottom: 16px;
+      color: var(--ink);
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.74rem;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .support-item h2 {
+      margin: 0;
+      color: var(--ink);
+      font-size: clamp(1rem, 1.7vw, 1.2rem);
+      line-height: 1.18;
+      font-weight: 950;
+      letter-spacing: 0;
+    }
+
+    .support-item p {
+      margin: 10px 0 0;
+      color: var(--ink-soft);
+      font-size: 0.95rem;
+      line-height: 1.45;
+      font-weight: 650;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 20px;
+      z-index: 20;
+      max-width: min(420px, calc(100vw - 32px));
+      padding: 13px 16px;
+      color: #fffdf2;
+      background: var(--ink);
+      border: 2px solid #fffdf2;
+      box-shadow: 7px 7px 0 var(--coral);
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.82rem;
+      font-weight: 900;
+      transform: translate(-50%, 140%);
+      transition: transform 220ms ease;
+    }
+
+    .toast.show {
+      transform: translate(-50%, 0);
+    }
+
+    @keyframes jitter {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      20% { transform: translate(-2px, 1px) rotate(-1deg); }
+      40% { transform: translate(2px, -1px) rotate(1deg); }
+      60% { transform: translate(-1px, -1px) rotate(0.5deg); }
+      80% { transform: translate(1px, 2px) rotate(-0.5deg); }
+    }
+
+    @keyframes ticket-float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-5px) rotate(-0.35deg); }
+    }
+
+    @keyframes pulse-meter {
+      0%, 100% { filter: saturate(1); }
+      50% { filter: saturate(1.4) brightness(1.08); }
+    }
+
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    @keyframes pop-ticket {
+      0% { opacity: 0; transform: translateY(-22px) rotate(-2deg) scale(0.95); }
+      100% { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
+    }
+
+    @media (max-width: 980px) {
+      .shell {
+        width: min(100% - 30px, 720px);
+      }
+
+      .topbar {
+        align-items: flex-start;
+      }
+
+      .nav {
+        display: none;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        padding-top: 42px;
+      }
+
+      .hero-copy {
+        max-width: none;
+      }
+
+      .board-wrap {
+        min-height: auto;
+      }
+
+      .board-wrap::before {
+        left: 4px;
+        top: -14px;
+        transform: rotate(-3deg);
+      }
+
+      .board {
+        width: 100%;
+        margin: 28px 0 0;
+        transform: rotate(0.65deg);
+        box-shadow: 10px 10px 0 rgba(21, 24, 33, 0.95);
+      }
+
+      .support {
+        padding-top: 22px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      body {
+        background-size: 30px 30px, 30px 30px, auto, auto, auto;
+      }
+
+      .shell {
+        width: min(100% - 24px, 560px);
+      }
+
+      .brand span:last-child {
+        font-size: 0.9rem;
+      }
+
+      .hero {
+        gap: 22px;
+        padding-top: 30px;
+      }
+
+      h1 {
+        font-size: clamp(2.9rem, 15vw, 4.6rem);
+        line-height: 0.9;
+      }
+
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .cta {
+        width: 100%;
+      }
+
+      .board-head {
+        grid-template-columns: 1fr;
+      }
+
+      .panic {
+        width: min(100%, 220px);
+        justify-self: start;
+      }
+
+      .lanes {
+        grid-template-columns: 1fr;
+      }
+
+      .ticket {
+        min-height: 0;
+      }
+
+      .ticket-list {
+        grid-template-columns: 1fr;
+      }
+
+      .support-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 410px) {
+      .eyebrow {
+        font-size: 0.7rem;
+      }
+
+      h1 {
+        font-size: clamp(2.55rem, 14vw, 3.35rem);
+      }
+
+      .lede {
+        font-size: 1rem;
+      }
+
+      .board {
+        border-width: 2px;
+      }
+
+      .board-head,
+      .lanes {
+        padding: 13px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="shell topbar" aria-label="Ship Happens navigation">
+      <a class="brand" href="#" aria-label="Ship Happens home">
+        <span class="brand-mark">#</span>
+        <span>Ship Happens</span>
+      </a>
+      <nav class="nav" aria-label="Page sections">
+        <a href="#board">Live queue</a>
+        <a href="#triage">Triage flow</a>
+        <a href="#signal">Signal rules</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="shell hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Bug tracker for commit chaos</p>
+          <h1 id="hero-title"><span class="brand-word">Ship</span> Happens. <span class="bug-word">Bugs</span> Get Roasted.</h1>
+          <p class="lede">A meme-ready issue queue that keeps the joke moving and the release unblocked. Triage what matters, dunk on the noise, and leave a clean trail for tomorrow's deploy.</p>
+          <div class="actions">
+            <button class="cta cta-primary" id="accessButton" type="button">Request beta access</button>
+            <button class="cta cta-secondary" id="triageButton" type="button">Roast the queue</button>
+          </div>
+          <p class="microcopy" id="microcopy">/panic-level: spicy but shippable</p>
+        </div>
+
+        <section class="board-wrap" id="board" aria-label="Interactive issue board demonstration">
+          <section class="board" aria-labelledby="board-title">
+            <div class="board-head">
+              <div>
+                <div class="window-dots" aria-hidden="true"><span></span></div>
+                <p class="board-title" id="board-title">~/release-friday/bug-roast</p>
+                <p class="board-sub">Live demo queue. Zero fake proof, maximum familiar pain.</p>
+              </div>
+              <div class="panic" role="meter" aria-label="Panic level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="76">
+                <div class="panic-label">
+                  <span>Panic</span>
+                  <span id="panicText">76%</span>
+                </div>
+                <div class="panic-track" aria-hidden="true">
+                  <div class="panic-fill" id="panicFill"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="lanes" id="issueLanes">
+              <div class="lane">
+                <div class="lane-title"><span>Incoming</span><span class="lane-count">03</span></div>
+                <div class="ticket-list" data-lane="incoming">
+                  <article class="ticket delay-a" data-tag="sev-meme">
+                    <h3>Button only submits when someone is watching</h3>
+                    <p>owner: frontend / vibe: suspicious</p>
+                  </article>
+                  <article class="ticket delay-b" data-tag="cache">
+                    <h3>Cache remembers choices nobody made</h3>
+                    <p>repro: hard refresh, then denial</p>
+                  </article>
+                </div>
+              </div>
+
+              <div class="lane">
+                <div class="lane-title"><span>Roasting</span><span class="lane-count">02</span></div>
+                <div class="ticket-list" data-lane="roasting">
+                  <article class="ticket delay-c" data-tag="hotfix">
+                    <h3>Works on my machine, deploy disagrees</h3>
+                    <p>status: accused by production</p>
+                  </article>
+                  <article class="ticket delay-d" data-tag="css">
+                    <h3>CSS entered its villain arc at 375px</h3>
+                    <p>viewport: tiny / confidence: loud</p>
+                  </article>
+                </div>
+              </div>
+
+              <div class="lane">
+                <div class="lane-title"><span>Shippable</span><span class="lane-count">01</span></div>
+                <div class="ticket-list" data-lane="shippable">
+                  <article class="ticket delay-e" data-tag="merged">
+                    <h3>Null took a personal day, guard clause hired</h3>
+                    <p>resolution: merged before standup</p>
+                  </article>
+                </div>
+              </div>
+            </div>
+
+            <p class="terminal-line" aria-live="polite" id="terminalLine">$ ship-happens triage --mode=memetic<span class="cursor" aria-hidden="true"></span></p>
+          </section>
+        </section>
+      </section>
+
+      <section class="shell support" id="triage" aria-label="Ship Happens support highlights">
+        <div class="support-grid">
+          <article class="support-item">
+            <span class="support-kicker"># label faster</span>
+            <h2>Statuses sound like the team actually talks.</h2>
+            <p>Swap sterile queues for readable lanes: incoming, roasting, shippable, and absolutely-not-today.</p>
+          </article>
+          <article class="support-item" id="signal">
+            <span class="support-kicker">! signal stays</span>
+            <h2>Memes annotate the work, not replace it.</h2>
+            <p>Every joke still carries owner, repro, severity, and next step so the issue survives Monday morning.</p>
+          </article>
+          <article class="support-item">
+            <span class="support-kicker">/ ship cleaner</span>
+            <h2>Release pressure becomes a shared dashboard.</h2>
+            <p>A panic meter, quick roasts, and shippable receipts make triage visible without another meeting.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">Beta request queued. Panic decreased by 9%.</div>
+
+  <script>
+    const accessButton = document.querySelector("#accessButton");
+    const triageButton = document.querySelector("#triageButton");
+    const panicMeter = document.querySelector(".panic");
+    const panicFill = document.querySelector("#panicFill");
+    const panicText = document.querySelector("#panicText");
+    const terminalLine = document.querySelector("#terminalLine");
+    const toast = document.querySelector("#toast");
+    const supportItems = document.querySelectorAll(".support-item");
+    const incomingLane = document.querySelector('[data-lane="incoming"]');
+    const laneCounts = document.querySelectorAll(".lane-count");
+    const board = document.querySelector(".board");
+
+    const issuePool = [
+      {
+        tag: "prod",
+        title: "Production said no with its whole chest",
+        meta: "owner: backend / repro: deploy"
+      },
+      {
+        tag: "flake",
+        title: "Test passes locally after direct eye contact",
+        meta: "owner: qa / mood: theatrical"
+      },
+      {
+        tag: "api",
+        title: "Endpoint returns vibes instead of JSON",
+        meta: "owner: platform / status: parsing"
+      },
+      {
+        tag: "ux",
+        title: "Modal opened a modal about opening modals",
+        meta: "owner: product / priority: please stop"
+      }
+    ];
+
+    let issueIndex = 0;
+    let panic = 76;
+    let toastTimer;
+
+    function updateCounts() {
+      const lanes = document.querySelectorAll(".ticket-list");
+      lanes.forEach((lane, index) => {
+        laneCounts[index].textContent = String(lane.children.length).padStart(2, "0");
+      });
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
+    }
+
+    function requestAccess() {
+      const issue = issuePool[issueIndex % issuePool.length];
+      issueIndex += 1;
+
+      const ticket = document.createElement("article");
+      ticket.className = "ticket new";
+      ticket.dataset.tag = issue.tag;
+      ticket.innerHTML = `<h3>${issue.title}</h3><p>${issue.meta}</p>`;
+      incomingLane.prepend(ticket);
+
+      if (incomingLane.children.length > 4) {
+        incomingLane.lastElementChild.remove();
+      }
+
+      panic = Math.max(31, panic - 9);
+      panicFill.style.width = `${panic}%`;
+      panicText.textContent = `${panic}%`;
+      panicMeter.setAttribute("aria-valuenow", String(panic));
+      terminalLine.innerHTML = `$ beta-access queued; auto-roast added #${String(issueIndex).padStart(2, "0")}<span class="cursor" aria-hidden="true"></span>`;
+      showToast("Beta request queued. Panic decreased by 9%.");
+      updateCounts();
+    }
+
+    function roastQueue() {
+      document.querySelector("#triage").scrollIntoView({ behavior: "smooth", block: "start" });
+      supportItems.forEach((item, index) => {
+        setTimeout(() => item.classList.add("is-lit"), index * 120);
+        setTimeout(() => item.classList.remove("is-lit"), 1900 + index * 120);
+      });
+      terminalLine.innerHTML = '$ ship-happens roast --queue=incoming --tone=constructive<span class="cursor" aria-hidden="true"></span>';
+    }
+
+    accessButton.addEventListener("click", requestAccess);
+    triageButton.addEventListener("click", roastQueue);
+
+    board.addEventListener("pointermove", (event) => {
+      const rect = board.getBoundingClientRect();
+      const x = ((event.clientX - rect.left) / rect.width) * 100;
+      const y = ((event.clientY - rect.top) / rect.height) * 100;
+      board.style.setProperty("--spark-x", `${x}%`);
+      board.style.setProperty("--spark-y", `${y}%`);
+    });
+
+    updateCounts();
+  </script>
+</body>
+</html>

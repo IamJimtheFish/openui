@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Landing Page Design Examples</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #202124;
+      --muted: #5f6368;
+      --line: #dadce0;
+      --paper: #ffffff;
+      --wash: #f7f8f9;
+      --accent: #0b57d0;
+      --accent-soft: #e8f0fe;
+      --good: #137333;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--wash);
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    main {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 48px 0;
+    }
+
+    header {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 4rem;
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+
+    .intro {
+      max-width: 720px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    article {
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+    }
+
+    h2 {
+      margin: 0 0 8px;
+      font-size: 1.2rem;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .meta {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    a:hover,
+    a:focus-visible {
+      text-decoration: underline;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 0 14px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: white;
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      text-decoration: none;
+      background: #0842a0;
+    }
+
+    .source {
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      padding: 0 12px;
+      border-radius: 8px;
+      background: var(--accent-soft);
+    }
+
+    .no-source {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .tag {
+      display: inline-flex;
+      width: fit-content;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #e6f4ea;
+      color: var(--good);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    @media (max-width: 720px) {
+      main {
+        width: min(100% - 24px, 1120px);
+        padding: 32px 0;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <span class="tag">Live examples</span>
+      <h1>Landing Page Design Examples</h1>
+      <p class="intro">A preview gallery for pages generated with the landing-page-design workflow. Examples with available prompts or design notes keep those files next to the page.</p>
+    </header>
+
+    <section class="grid" aria-label="Examples">
+      <article>
+        <div>
+          <h2>Mnemonic Glitch</h2>
+          <p class="meta">A dark, glitch-driven second-brain landing page.</p>
+        </div>
+        <div class="links">
+          <a class="button" href="examples/mnemonic-glitch/">Preview</a>
+          <a class="source" href="examples/mnemonic-glitch/prompt.md">Prompt</a>
+        </div>
+      </article>
+
+      <article>
+        <div>
+          <h2>Theo Survival Holo</h2>
+          <p class="meta">A holographic Theo-themed survival kit concept.</p>
+        </div>
+        <div class="links">
+          <a class="button" href="examples/theo-survival-holo/">Preview</a>
+          <a class="source" href="examples/theo-survival-holo/prompt.md">Prompt</a>
+        </div>
+      </article>
+
+      <article>
+        <div>
+          <h2>Tiny Truce Club</h2>
+          <p class="meta">A playful premium club page with illustrated warmth.</p>
+        </div>
+        <div class="links">
+          <a class="button" href="examples/tiny-truce-club/">Preview</a>
+          <a class="source" href="examples/tiny-truce-club/prompt.md">Prompt</a>
+        </div>
+      </article>
+
+      <article>
+        <div>
+          <h2>Theo Clears the Feed</h2>
+          <p class="meta">A creator-fan landing page with a dark signal aesthetic.</p>
+        </div>
+        <div class="links">
+          <a class="button" href="examples/theo-clears-feed/">Preview</a>
+          <span class="no-source">No prompt included</span>
+        </div>
+      </article>
+
+      <article>
+        <div>
+          <h2>Theo t3.gg</h2>
+          <p class="meta">A frontend fan page with a louder, terminal-inspired direction.</p>
+        </div>
+        <div class="links">
+          <a class="button" href="examples/theo-t3gg/">Preview</a>
+          <span class="no-source">No prompt included</span>
+        </div>
+      </article>
+
+      <article>
+        <div>
+          <h2>LTT Drop-Test Department</h2>
+          <p class="meta">A playful tech-lab fan page with a custom hero asset.</p>
+        </div>
+        <div class="links">
+          <a class="button" href="examples/ltt-drop-test-department/">Preview</a>
+          <a class="source" href="examples/ltt-drop-test-department/design.md">Design</a>
+        </div>
+      </article>
+
+      <article>
+        <div>
+          <h2>Ship Happens</h2>
+          <p class="meta">A terminal-comic hybrid bug tracker concept.</p>
+        </div>
+        <div class="links">
+          <a class="button" href="examples/ship-happens-terminal-comic/">Preview</a>
+          <a class="source" href="examples/ship-happens-terminal-comic/prompt.md">Prompt</a>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

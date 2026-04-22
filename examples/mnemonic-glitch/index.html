@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mnemonic — A Second Brain That Stays With You</title>
+  <style>
+    :root {
+      --bg: #091016;
+      --bg-deep: #060b10;
+      --ink: #c7f1ea;
+      --ink-soft: #9fc2bf;
+      --signal: #75f7d3;
+      --signal-2: #9f8cff;
+      --memory: #ffd58f;
+      --danger: #ff9fa8;
+      --line: rgba(117, 247, 211, 0.15);
+      --line-strong: rgba(117, 247, 211, 0.3);
+      --surface: rgba(8, 17, 25, 0.34);
+      --surface-2: rgba(13, 24, 35, 0.55);
+      --shadow: 0 20px 80px rgba(0, 0, 0, 0.45);
+      --max: 1280px;
+      --ease: cubic-bezier(.22, 1, .36, 1);
+      --hero-shift-x: 0px;
+      --hero-shift-y: 0px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 20% 10%, rgba(159, 140, 255, 0.12), transparent 28%),
+        radial-gradient(circle at 82% 22%, rgba(117, 247, 211, 0.12), transparent 24%),
+        radial-gradient(circle at 50% 120%, rgba(255, 213, 143, 0.08), transparent 35%),
+        linear-gradient(180deg, #0b1219 0%, var(--bg) 45%, var(--bg-deep) 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          180deg,
+          transparent 0,
+          transparent 31px,
+          rgba(117, 247, 211, 0.035) 32px
+        ),
+        linear-gradient(
+          90deg,
+          transparent 0,
+          transparent calc(50% - 1px),
+          rgba(117, 247, 211, 0.045) 50%,
+          transparent calc(50% + 1px)
+        );
+      pointer-events: none;
+      opacity: 0.9;
+      z-index: 0;
+    }
+
+    #memoryField {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 0.85;
+      pointer-events: none;
+    }
+
+    .noise,
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .noise {
+      opacity: 0.09;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.35) 0.5px, transparent 0.5px),
+        radial-gradient(circle at 80% 60%, rgba(255,255,255,0.2) 0.5px, transparent 0.5px),
+        radial-gradient(circle at 40% 80%, rgba(255,255,255,0.18) 0.5px, transparent 0.5px);
+      background-size: 22px 22px, 26px 26px, 18px 18px;
+      mix-blend-mode: screen;
+    }
+
+    .scanlines {
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255,255,255,0.015) 0%,
+          rgba(255,255,255,0) 48%,
+          rgba(255,255,255,0.02) 51%,
+          rgba(255,255,255,0) 100%
+        );
+      background-size: 100% 4px;
+      opacity: 0.18;
+    }
+
+    .page {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      width: min(calc(100% - 2rem), var(--max));
+      margin: 0 auto;
+      padding: 0 0 2rem;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: clamp(6rem, 10vw, 8rem) 0 2rem;
+      isolation: isolate;
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 12% 5% auto;
+      height: 42vh;
+      border-radius: 999px;
+      pointer-events: none;
+      z-index: -1;
+      filter: blur(28px);
+      opacity: 0.45;
+      transform: translate(var(--hero-shift-x), var(--hero-shift-y));
+    }
+
+    .hero::before {
+      background:
+        radial-gradient(circle at 50% 50%, rgba(117, 247, 211, 0.12), transparent 60%);
+    }
+
+    .hero::after {
+      background:
+        radial-gradient(circle at 50% 50%, rgba(159, 140, 255, 0.1), transparent 65%);
+      inset: auto 12% 18% auto;
+      width: 34vw;
+      height: 34vw;
+    }
+
+    .signal-ring {
+      position: absolute;
+      inset: 14% 12% auto;
+      height: min(62vw, 38rem);
+      aspect-ratio: 1;
+      margin: auto;
+      pointer-events: none;
+      opacity: 0.72;
+      transform: translate(var(--hero-shift-x), var(--hero-shift-y));
+    }
+
+    .signal-ring::before,
+    .signal-ring::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(117, 247, 211, 0.11);
+      box-shadow:
+        inset 0 0 80px rgba(117, 247, 211, 0.03),
+        0 0 120px rgba(117, 247, 211, 0.03);
+    }
+
+    .signal-ring::after {
+      inset: 13% 13%;
+      border-color: rgba(159, 140, 255, 0.14);
+      transform: rotate(17deg);
+    }
+
+    .ring-trace {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border-top: 1px solid rgba(255, 213, 143, 0.38);
+      border-right: 1px solid transparent;
+      border-left: 1px solid transparent;
+      transform-origin: center;
+      animation: spin 22s linear infinite;
+      filter: drop-shadow(0 0 8px rgba(255, 213, 143, 0.12));
+    }
+
+    .ring-trace.alt {
+      inset: 8%;
+      border-top-color: rgba(117, 247, 211, 0.34);
+      animation-duration: 28s;
+      animation-direction: reverse;
+    }
+
+    .hero-shell {
+      position: relative;
+      width: min(100%, 56rem);
+      text-align: center;
+      transform: translate(var(--hero-shift-x), var(--hero-shift-y));
+    }
+
+    .eyebrow {
+      margin: 0 0 1.1rem;
+      font-size: 0.76rem;
+      line-height: 1;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      opacity: 0.9;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(3.3rem, 11vw, 7.7rem);
+      line-height: 0.93;
+      letter-spacing: -0.06em;
+      font-weight: 800;
+      text-wrap: balance;
+      max-width: 11ch;
+      margin-inline: auto;
+      color: #bce7df;
+      text-shadow: 0 0 24px rgba(117, 247, 211, 0.08);
+    }
+
+    .lead-line {
+      display: block;
+    }
+
+    .tint-memory {
+      background: linear-gradient(135deg, var(--memory) 0%, #f9e8c5 22%, var(--signal) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .glitch-word {
+      position: relative;
+      display: inline-block;
+      color: transparent;
+      background: linear-gradient(90deg, #f7c76a 0%, #ffd58f 18%, #8df2dc 78%, #bba7ff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      text-shadow:
+        0 0 26px rgba(117, 247, 211, 0.12),
+        0 0 44px rgba(159, 140, 255, 0.07);
+      will-change: transform;
+    }
+
+    .glitch-word::before,
+    .glitch-word::after {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      mix-blend-mode: screen;
+      opacity: 0.7;
+    }
+
+    .glitch-word::before {
+      color: rgba(117, 247, 211, 0.95);
+      transform: translate(-0.04em, 0.015em);
+      clip-path: inset(0 0 52% 0);
+      animation: chromaA 3.2s steps(2, end) infinite;
+    }
+
+    .glitch-word::after {
+      color: rgba(255, 159, 168, 0.72);
+      transform: translate(0.045em, -0.012em);
+      clip-path: inset(48% 0 0 0);
+      animation: chromaB 2.8s steps(2, end) infinite;
+    }
+
+    .lede {
+      width: min(100%, 38rem);
+      margin: 1.5rem auto 0;
+      font-size: clamp(1rem, 2.2vw, 1.2rem);
+      line-height: 1.55;
+      color: rgba(199, 241, 234, 0.86);
+      text-wrap: pretty;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.9rem;
+      margin-top: 2rem;
+    }
+
+    .button {
+      appearance: none;
+      border: none;
+      background: none;
+      color: var(--ink);
+      font: inherit;
+      cursor: pointer;
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 3.35rem;
+      padding: 0 1.2rem;
+      letter-spacing: -0.01em;
+      font-weight: 600;
+      border-radius: 999px;
+      transition:
+        transform 220ms var(--ease),
+        background-color 220ms var(--ease),
+        border-color 220ms var(--ease),
+        box-shadow 220ms var(--ease),
+        color 220ms var(--ease);
+      outline: none;
+    }
+
+    .button:focus-visible,
+    .composer-input:focus-visible {
+      box-shadow:
+        0 0 0 2px rgba(6, 11, 16, 0.9),
+        0 0 0 4px rgba(117, 247, 211, 0.5);
+    }
+
+    .button.primary {
+      color: #04110f;
+      background:
+        linear-gradient(135deg, rgba(255, 213, 143, 0.98), rgba(117, 247, 211, 0.92));
+      box-shadow:
+        0 10px 40px rgba(117, 247, 211, 0.18),
+        inset 0 -1px 0 rgba(0,0,0,0.12);
+    }
+
+    .button.secondary {
+      border: 1px solid rgba(117, 247, 211, 0.24);
+      background: rgba(7, 14, 20, 0.28);
+      color: var(--ink);
+      backdrop-filter: blur(10px);
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+    }
+
+    .button:active {
+      transform: translateY(0);
+    }
+
+    .composer {
+      width: min(100%, 40rem);
+      margin: 1.35rem auto 0;
+      opacity: 0;
+      transform: translateY(1rem);
+      pointer-events: none;
+      transition:
+        opacity 280ms var(--ease),
+        transform 280ms var(--ease);
+    }
+
+    .composer.active {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .composer-label {
+      margin: 0 0 0.7rem;
+      font-size: 0.8rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(199, 241, 234, 0.66);
+    }
+
+    .composer-line {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      border-bottom: 1px solid rgba(117, 247, 211, 0.28);
+      padding-bottom: 0.65rem;
+      background:
+        linear-gradient(90deg, rgba(117,247,211,0.08), transparent 60%);
+    }
+
+    .composer-prompt {
+      flex: 0 0 auto;
+      font-size: 0.98rem;
+      color: rgba(255, 213, 143, 0.92);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .composer-input {
+      width: 100%;
+      min-width: 0;
+      background: transparent;
+      border: none;
+      color: var(--ink);
+      font: inherit;
+      font-size: 1rem;
+      padding: 0.2rem 0;
+      outline: none;
+    }
+
+    .composer-input::placeholder {
+      color: rgba(159, 194, 191, 0.48);
+    }
+
+    .composer-note {
+      margin: 0.7rem 0 0;
+      font-size: 0.88rem;
+      color: rgba(159, 194, 191, 0.74);
+    }
+
+    .memory-fragments {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .fragment {
+      position: absolute;
+      top: calc(var(--top) * 1%);
+      left: calc(var(--left) * 1%);
+      max-width: 18ch;
+      font-size: clamp(0.8rem, 1.2vw, 0.95rem);
+      line-height: 1.1;
+      color: rgba(199, 241, 234, 0.68);
+      letter-spacing: -0.01em;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      opacity: 0.75;
+      transform:
+        translate3d(calc(var(--float-x, 0px) + var(--drift-x, 0px)), calc(var(--float-y, 0px) + var(--drift-y, 0px)), 0)
+        rotate(calc(var(--tilt) * 1deg));
+      transform-origin: center;
+      animation: drift var(--duration) ease-in-out infinite;
+      animation-delay: var(--delay);
+      white-space: nowrap;
+      text-shadow: 0 0 18px rgba(117, 247, 211, 0.08);
+      will-change: transform, opacity;
+    }
+
+    .fragment::before {
+      content: "";
+      display: inline-block;
+      width: 1.4rem;
+      height: 1px;
+      margin-right: 0.55rem;
+      vertical-align: middle;
+      background: linear-gradient(90deg, rgba(255, 213, 143, 0.85), rgba(117, 247, 211, 0));
+    }
+
+    .fragment::after {
+      content: attr(data-id);
+      display: block;
+      margin-left: 2rem;
+      margin-top: 0.28rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      color: rgba(159, 194, 191, 0.4);
+    }
+
+    .fragment.user-note {
+      color: rgba(255, 240, 212, 0.9);
+      text-shadow:
+        0 0 12px rgba(255, 213, 143, 0.18),
+        0 0 36px rgba(117, 247, 211, 0.08);
+    }
+
+    .fragment.recalling {
+      animation: recallPulse 1400ms var(--ease) forwards;
+      z-index: 5;
+    }
+
+    .support-cluster {
+      width: min(100%, 70rem);
+      margin: 0 auto;
+      padding-top: 2.5rem;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .support-item {
+      min-height: 8.6rem;
+      padding: 1rem 1rem 1.05rem;
+      border: 1px solid rgba(117, 247, 211, 0.14);
+      border-radius: 1.15rem;
+      background:
+        linear-gradient(180deg, rgba(11, 20, 30, 0.52), rgba(7, 14, 20, 0.3));
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+    }
+
+    .support-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      margin-bottom: 0.7rem;
+      border-radius: 999px;
+      background: rgba(117, 247, 211, 0.08);
+      color: var(--memory);
+      font-size: 1rem;
+      box-shadow: inset 0 0 0 1px rgba(117, 247, 211, 0.1);
+    }
+
+    .support-title {
+      margin: 0 0 0.4rem;
+      font-size: 1rem;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #d8fff7;
+    }
+
+    .support-copy {
+      margin: 0;
+      color: rgba(199, 241, 234, 0.76);
+      font-size: 0.95rem;
+      line-height: 1.45;
+      text-wrap: pretty;
+    }
+
+    .status {
+      position: fixed;
+      left: 50%;
+      bottom: 1.3rem;
+      transform: translateX(-50%) translateY(1rem);
+      min-width: min(90vw, 20rem);
+      padding: 0.85rem 1rem;
+      border-radius: 999px;
+      background: rgba(5, 12, 18, 0.82);
+      color: rgba(255, 239, 210, 0.96);
+      border: 1px solid rgba(255, 213, 143, 0.2);
+      backdrop-filter: blur(12px);
+      font-size: 0.92rem;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 10;
+      transition:
+        opacity 220ms var(--ease),
+        transform 220ms var(--ease);
+      box-shadow: var(--shadow);
+    }
+
+    .status.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .sr-only {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+
+    @keyframes drift {
+      0%, 100% {
+        transform:
+          translate3d(calc(var(--float-x, 0px) + var(--drift-x, 0px)), calc(var(--float-y, 0px) + var(--drift-y, 0px)), 0)
+          rotate(calc(var(--tilt) * 1deg));
+      }
+      50% {
+        transform:
+          translate3d(calc(var(--float-x, 0px) + var(--drift-x, 0px)), calc(var(--float-y, 0px) + var(--drift-y, 0px) - 10px), 0)
+          rotate(calc((var(--tilt) + 2) * 1deg));
+      }
+    }
+
+    @keyframes recallPulse {
+      0% {
+        transform:
+          translate3d(calc(var(--float-x, 0px) + var(--drift-x, 0px)), calc(var(--float-y, 0px) + var(--drift-y, 0px)), 0)
+          scale(1)
+          rotate(calc(var(--tilt) * 1deg));
+        opacity: 0.72;
+      }
+      38% {
+        transform:
+          translate3d(calc((50vw - (var(--left) * 1vw)) * 0.16), calc((38vh - (var(--top) * 1vh)) * 0.16), 0)
+          scale(1.12)
+          rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform:
+          translate3d(calc(var(--float-x, 0px) + var(--drift-x, 0px)), calc(var(--float-y, 0px) + var(--drift-y, 0px)), 0)
+          scale(1)
+          rotate(calc(var(--tilt) * 1deg));
+        opacity: 0.76;
+      }
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes chromaA {
+      0%, 86%, 100% { transform: translate(-0.04em, 0.015em); opacity: 0.62; }
+      87% { transform: translate(-0.07em, 0.035em); opacity: 0.84; }
+      89% { transform: translate(-0.02em, -0.01em); opacity: 0.48; }
+    }
+
+    @keyframes chromaB {
+      0%, 88%, 100% { transform: translate(0.045em, -0.012em); opacity: 0.5; }
+      89% { transform: translate(0.07em, -0.03em); opacity: 0.85; }
+      91% { transform: translate(0.02em, 0.01em); opacity: 0.45; }
+    }
+
+    @media (max-width: 900px) {
+      .support-cluster {
+        grid-template-columns: 1fr;
+      }
+
+      .fragment {
+        font-size: 0.78rem;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .hero {
+        padding-top: 5.4rem;
+      }
+
+      .eyebrow {
+        font-size: 0.69rem;
+      }
+
+      .lede {
+        width: min(100%, 31rem);
+      }
+
+      .cta-row {
+        width: 100%;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .composer-line {
+        gap: 0.6rem;
+      }
+
+      .composer-prompt {
+        font-size: 0.86rem;
+      }
+
+      .fragment:nth-child(n + 8) {
+        display: none;
+      }
+
+      .signal-ring {
+        inset: 18% 4% auto;
+        height: min(78vw, 28rem);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .hero,
+      .hero-shell,
+      .signal-ring,
+      .fragment {
+        transform: none !important;
+      }
+
+      #memoryField {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="memoryField" aria-hidden="true"></canvas>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <main class="page">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="signal-ring" aria-hidden="true">
+        <span class="ring-trace"></span>
+        <span class="ring-trace alt"></span>
+      </div>
+
+      <div class="memory-fragments" id="fragments" aria-hidden="true"></div>
+
+      <div class="hero-shell">
+        <p class="eyebrow">Second-brain notes for writers, researchers, and builders</p>
+
+        <h1 id="hero-title">
+          <span class="lead-line">Build a <span class="tint-memory">mind</span></span>
+          <span class="lead-line">that <span class="glitch-word" id="glitchWord" data-text="doesn’t forget">doesn’t forget</span></span>
+        </h1>
+
+        <p class="lede">
+          Capture loose thoughts, links, and sparks before they vanish.
+          Your notes reconnect themselves when the work calls them back.
+        </p>
+
+        <div class="cta-row" aria-label="Primary actions">
+          <button class="button primary" id="captureBtn" type="button">Capture a First Thought</button>
+          <button class="button secondary" id="recallBtn" type="button">Watch Recall Happen</button>
+        </div>
+
+        <form class="composer" id="composer" aria-label="Capture a thought">
+          <p class="composer-label">Drop one thought into the field</p>
+          <div class="composer-line">
+            <span class="composer-prompt" aria-hidden="true">remember:</span>
+            <label class="sr-only" for="thoughtInput">Write a thought and press Enter to save it</label>
+            <input
+              id="thoughtInput"
+              class="composer-input"
+              type="text"
+              maxlength="90"
+              placeholder="the thing I’ll need later"
+              autocomplete="off"
+            />
+          </div>
+          <p class="composer-note">Press Enter. It joins the memory field instantly.</p>
+        </form>
+      </div>
+    </section>
+
+    <section class="support-cluster" aria-label="Supporting highlights">
+      <article class="support-item">
+        <div class="support-mark" aria-hidden="true">◎</div>
+        <h2 class="support-title">Capture in passing</h2>
+        <p class="support-copy">Save raw thoughts, links, quotes, and unfinished ideas before attention moves somewhere else.</p>
+      </article>
+
+      <article class="support-item">
+        <div class="support-mark" aria-hidden="true">⟷</div>
+        <h2 class="support-title">Connect by association</h2>
+        <p class="support-copy">Notes behave like memory, not folders—threads, backlinks, and patterns surface across projects.</p>
+      </article>
+
+      <article class="support-item">
+        <div class="support-mark" aria-hidden="true">◇</div>
+        <h2 class="support-title">Recall inside the work</h2>
+        <p class="support-copy">Search, context cues, and linked fragments return the right thought when you need it, not later.</p>
+      </article>
+    </section>
+  </main>
+
+  <div class="status" id="status" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const fragmentsRoot = document.getElementById('fragments');
+      const captureBtn = document.getElementById('captureBtn');
+      const recallBtn = document.getElementById('recallBtn');
+      const composer = document.getElementById('composer');
+      const thoughtInput = document.getElementById('thoughtInput');
+      const status = document.getElementById('status');
+      const glitchWord = document.getElementById('glitchWord');
+
+      const fragmentSeed = [
+        "half-formed thesis",
+        "late-night insight",
+        "research trail",
+        "voice memo to self",
+        "pattern from the bug",
+        "article worth returning to",
+        "question after the meeting",
+        "thread I should not lose",
+        "idea for chapter two",
+        "quote with teeth"
+      ];
+
+      let fragmentCount = 0;
+
+      function announce(message) {
+        status.textContent = message;
+        status.classList.add('show');
+        clearTimeout(announce.timer);
+        announce.timer = setTimeout(() => {
+          status.classList.remove('show');
+        }, 1800);
+      }
+
+      function addFragment(text, userNote = false) {
+        fragmentCount += 1;
+
+        const el = document.createElement('span');
+        el.className = `fragment${userNote ? ' user-note' : ''}`;
+        el.textContent = text;
+        el.dataset.id = `MEM-${String(fragmentCount).padStart(2, '0')}`;
+
+        const angle = Math.random() * Math.PI * 2;
+        const ring = 32 + Math.random() * 28;
+        const left = 50 + Math.cos(angle) * ring;
+        const top = 38 + Math.sin(angle) * (ring * 0.72);
+        const tilt = (-10 + Math.random() * 20).toFixed(2);
+        const floatX = (-18 + Math.random() * 36).toFixed(1) + 'px';
+        const floatY = (-14 + Math.random() * 28).toFixed(1) + 'px';
+        const duration = (9 + Math.random() * 8).toFixed(2) + 's';
+        const delay = (-Math.random() * 7).toFixed(2) + 's';
+
+        el.style.setProperty('--left', clamp(left, 8, 90));
+        el.style.setProperty('--top', clamp(top, 10, 82));
+        el.style.setProperty('--tilt', tilt);
+        el.style.setProperty('--float-x', floatX);
+        el.style.setProperty('--float-y', floatY);
+        el.style.setProperty('--duration', duration);
+        el.style.setProperty('--delay', delay);
+
+        fragmentsRoot.appendChild(el);
+
+        if (fragmentsRoot.children.length > 12) {
+          fragmentsRoot.removeChild(fragmentsRoot.firstElementChild);
+        }
+
+        return el;
+      }
+
+      function clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value));
+      }
+
+      fragmentSeed.forEach((item) => addFragment(item, false));
+
+      captureBtn.addEventListener('click', () => {
+        composer.classList.add('active');
+        thoughtInput.focus();
+        announce('Type one thought and press Enter.');
+      });
+
+      composer.addEventListener('submit', (event) => {
+        event.preventDefault();
+      });
+
+      thoughtInput.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter') return;
+
+        event.preventDefault();
+        const value = thoughtInput.value.trim();
+        if (!value) return;
+
+        const created = addFragment(value, true);
+        thoughtInput.value = '';
+        composer.classList.add('active');
+        pulseFragment(created);
+        announce('Thought stored in the field.');
+      });
+
+      function pulseFragment(el) {
+        el.classList.add('recalling');
+        setTimeout(() => el.classList.remove('recalling'), 1500);
+      }
+
+      recallBtn.addEventListener('click', () => {
+        const all = Array.from(fragmentsRoot.querySelectorAll('.fragment'));
+        if (!all.length) return;
+
+        all.forEach((fragment, index) => {
+          setTimeout(() => {
+            fragment.classList.remove('recalling');
+            void fragment.offsetWidth;
+            fragment.classList.add('recalling');
+          }, index * 60);
+        });
+
+        scrambleGlitch(glitchWord, "comes back");
+        announce('Relevant memory resurfaced.');
+      });
+
+      function scrambleGlitch(el, finalText) {
+        const original = el.dataset.text;
+        const chars = "!<>-_\\/[]{}—=+*^?#________";
+        const target = finalText;
+        let frame = 0;
+
+        clearInterval(scrambleGlitch.timer);
+
+        scrambleGlitch.timer = setInterval(() => {
+          const progress = frame / 14;
+          const output = target
+            .split('')
+            .map((char, index) => {
+              if (char === ' ') return ' ';
+              if (progress * target.length > index) return target[index];
+              return chars[Math.floor(Math.random() * chars.length)];
+            })
+            .join('');
+
+          el.textContent = output;
+          el.dataset.text = output;
+          frame += 1;
+
+          if (frame > 14) {
+            clearInterval(scrambleGlitch.timer);
+            setTimeout(() => {
+              el.textContent = original;
+              el.dataset.text = original;
+            }, 1200);
+          }
+        }, 40);
+      }
+
+      if (!reduceMotion) {
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let currentX = mouseX;
+        let currentY = mouseY;
+
+        window.addEventListener('pointermove', (event) => {
+          mouseX = event.clientX;
+          mouseY = event.clientY;
+        });
+
+        const motionLoop = () => {
+          currentX += (mouseX - currentX) * 0.08;
+          currentY += (mouseY - currentY) * 0.08;
+
+          const x = ((currentX / window.innerWidth) - 0.5) * 18;
+          const y = ((currentY / window.innerHeight) - 0.5) * 14;
+
+          document.documentElement.style.setProperty('--hero-shift-x', `${x * 0.35}px`);
+          document.documentElement.style.setProperty('--hero-shift-y', `${y * 0.35}px`);
+
+          Array.from(fragmentsRoot.children).forEach((fragment, index) => {
+            const driftX = (x * ((index % 4) - 1.5)) * 0.18;
+            const driftY = (y * (((index + 1) % 3) - 1)) * 0.22;
+            fragment.style.setProperty('--drift-x', `${driftX.toFixed(2)}px`);
+            fragment.style.setProperty('--drift-y', `${driftY.toFixed(2)}px`);
+          });
+
+          requestAnimationFrame(motionLoop);
+        };
+
+        requestAnimationFrame(motionLoop);
+      }
+
+      (function canvasField() {
+        if (reduceMotion) return;
+
+        const canvas = document.getElementById('memoryField');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        let width = 0;
+        let height = 0;
+        let dpr = Math.min(window.devicePixelRatio || 1, 2);
+        let time = 0;
+
+        const nodes = Array.from({ length: 42 }, () => ({
+          x: Math.random(),
+          y: Math.random(),
+          vx: (Math.random() - 0.5) * 0.00028,
+          vy: (Math.random() - 0.5) * 0.00028,
+          r: 0.8 + Math.random() * 1.8
+        }));
+
+        function resize() {
+          dpr = Math.min(window.devicePixelRatio || 1, 2);
+          width = window.innerWidth;
+          height = window.innerHeight;
+          canvas.width = Math.floor(width * dpr);
+          canvas.height = Math.floor(height * dpr);
+          canvas.style.width = width + 'px';
+          canvas.style.height = height + 'px';
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+
+        function draw() {
+          time += 0.0028;
+          ctx.clearRect(0, 0, width, height);
+
+          for (const node of nodes) {
+            node.x += node.vx;
+            node.y += node.vy;
+
+            if (node.x < 0 || node.x > 1) node.vx *= -1;
+            if (node.y < 0 || node.y > 1) node.vy *= -1;
+          }
+
+          for (let i = 0; i < nodes.length; i++) {
+            const a = nodes[i];
+            const ax = a.x * width;
+            const ay = a.y * height;
+
+            for (let j = i + 1; j < nodes.length; j++) {
+              const b = nodes[j];
+              const bx = b.x * width;
+              const by = b.y * height;
+
+              const dx = ax - bx;
+              const dy = ay - by;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+
+              if (dist < 160) {
+                const alpha = (1 - dist / 160) * 0.14;
+                ctx.strokeStyle = `rgba(117, 247, 211, ${alpha})`;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(ax, ay);
+                ctx.lineTo(bx, by);
+                ctx.stroke();
+              }
+            }
+          }
+
+          for (const node of nodes) {
+            const x = node.x * width + Math.sin(time * 12 + node.y * 6) * 6;
+            const y = node.y * height + Math.cos(time * 10 + node.x * 8) * 6;
+
+            ctx.beginPath();
+            ctx.fillStyle = 'rgba(117, 247, 211, 0.75)';
+            ctx.arc(x, y, node.r, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.fillStyle = 'rgba(255, 213, 143, 0.18)';
+            ctx.arc(x, y, node.r * 3.8, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          requestAnimationFrame(draw);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        requestAnimationFrame(draw);
+      })();
+    })();
+  </script>
+</body>
+</html>
