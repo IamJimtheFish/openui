@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Stillwell - Bottled Silence</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%23f5f1e8'/%3E%3Cpath d='M9 16h14' stroke='%23252823' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M13 10h6v12h-6z' fill='none' stroke='%238ea99a' stroke-width='1.5'/%3E%3C/svg%3E"
+    >
+    <meta
+      name="description"
+      content="Reserve Stillwell's first release of bottled silence: sealed glass objects paired with a two-minute quiet ritual."
+    >
+    <style>
+      :root {
+        --paper: #f5f1e8;
+        --paper-deep: #e8e0d1;
+        --ink: #252823;
+        --soft-ink: #5f6258;
+        --mineral: #8ea99a;
+        --mineral-deep: #486a5c;
+        --glass: rgba(220, 238, 229, 0.42);
+        --glass-edge: rgba(255, 255, 255, 0.82);
+        --amber: #b76d3a;
+        --line: rgba(37, 40, 35, 0.14);
+        --surface: rgba(255, 252, 244, 0.64);
+        --shadow: 0 34px 90px rgba(63, 70, 61, 0.18);
+        --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        background: var(--paper);
+        color: var(--ink);
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        font-family: var(--sans);
+        background:
+          radial-gradient(circle at 72% 24%, rgba(255, 255, 255, 0.9), transparent 28%),
+          radial-gradient(circle at 18% 18%, rgba(142, 169, 154, 0.26), transparent 24%),
+          linear-gradient(120deg, #f8f4ea 0%, #e9e2d5 52%, #f5f1e8 100%);
+      }
+
+      body::before {
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        pointer-events: none;
+        content: "";
+        opacity: 0.38;
+        background-image:
+          linear-gradient(rgba(37, 40, 35, 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(37, 40, 35, 0.028) 1px, transparent 1px);
+        background-size: 44px 44px, 44px 44px;
+        mask-image: linear-gradient(to bottom, transparent 0%, black 16%, black 84%, transparent 100%);
+      }
+
+      body::after {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        content: "";
+        opacity: 0.18;
+        background-image:
+          radial-gradient(circle, rgba(37, 40, 35, 0.28) 0 0.8px, transparent 1px);
+        background-size: 9px 9px;
+        mix-blend-mode: multiply;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .page {
+        position: relative;
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        gap: clamp(16px, 2vw, 28px);
+        min-height: 100svh;
+        overflow: hidden;
+        padding: clamp(20px, 3vw, 38px) clamp(18px, 5vw, 72px) clamp(14px, 2vw, 24px);
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        min-height: 36px;
+        color: var(--soft-ink);
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--ink);
+      }
+
+      .brand-mark {
+        position: relative;
+        width: 24px;
+        height: 24px;
+        border: 1px solid rgba(37, 40, 35, 0.32);
+        border-radius: 50%;
+      }
+
+      .brand-mark::before,
+      .brand-mark::after {
+        position: absolute;
+        top: 50%;
+        content: "";
+        width: 7px;
+        height: 1px;
+        background: var(--ink);
+      }
+
+      .brand-mark::before {
+        left: 5px;
+      }
+
+      .brand-mark::after {
+        right: 5px;
+      }
+
+      .release-note {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        white-space: nowrap;
+      }
+
+      .release-note::before {
+        width: 38px;
+        height: 1px;
+        content: "";
+        background: rgba(37, 40, 35, 0.24);
+      }
+
+      .hero {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 0.94fr) minmax(320px, 1.06fr);
+        align-items: center;
+        gap: clamp(20px, 4vw, 70px);
+        min-height: clamp(440px, 69svh, 690px);
+      }
+
+      .hero-copy {
+        position: relative;
+        z-index: 2;
+        max-width: 680px;
+        padding-bottom: clamp(8px, 2vh, 20px);
+      }
+
+      .kicker {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 0 0 18px;
+        color: var(--mineral-deep);
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+      }
+
+      .kicker::before {
+        width: 42px;
+        height: 1px;
+        content: "";
+        background: currentColor;
+      }
+
+      h1 {
+        max-width: 11ch;
+        margin: 0;
+        color: #242720;
+        font-family: var(--serif);
+        font-size: clamp(4.1rem, 10vw, 10rem);
+        font-weight: 400;
+        line-height: 0.78;
+        text-wrap: balance;
+      }
+
+      h1 .quiet-word {
+        position: relative;
+        display: inline-block;
+        color: var(--mineral-deep);
+        text-shadow: 0 14px 42px rgba(72, 106, 92, 0.22);
+      }
+
+      h1 .quiet-word::after {
+        position: absolute;
+        right: 0.04em;
+        bottom: 0.1em;
+        left: 0.02em;
+        height: 0.08em;
+        content: "";
+        background: linear-gradient(90deg, transparent, rgba(142, 169, 154, 0.72), transparent);
+        transform-origin: center;
+        animation: hushLine 5.4s ease-in-out infinite;
+      }
+
+      .lede {
+        max-width: 500px;
+        margin: clamp(20px, 3vw, 34px) 0 0;
+        color: var(--soft-ink);
+        font-size: clamp(1rem, 1.5vw, 1.2rem);
+        line-height: 1.7;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: clamp(24px, 3.2vw, 36px);
+      }
+
+      .primary-cta,
+      .secondary-cta {
+        min-height: 48px;
+        border: 1px solid transparent;
+        border-radius: 999px;
+        padding: 0 22px;
+        cursor: pointer;
+        font-size: 0.82rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        text-decoration: none;
+        transition: transform 180ms ease, background 180ms ease, border-color 180ms ease, color 180ms ease;
+      }
+
+      .primary-cta {
+        color: #fffaf1;
+        background: #22251f;
+        box-shadow: 0 18px 38px rgba(37, 40, 35, 0.22);
+      }
+
+      .secondary-cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--ink);
+        border-color: rgba(37, 40, 35, 0.22);
+        background: rgba(255, 252, 244, 0.38);
+      }
+
+      .primary-cta:hover,
+      .secondary-cta:hover {
+        transform: translateY(-2px);
+      }
+
+      .primary-cta:focus-visible,
+      .secondary-cta:focus-visible,
+      .bottle:focus-visible,
+      input:focus-visible {
+        outline: 3px solid rgba(183, 109, 58, 0.45);
+        outline-offset: 4px;
+      }
+
+      .reservation {
+        width: min(100%, 520px);
+        max-height: 0;
+        margin-top: 0;
+        overflow: hidden;
+        color: var(--soft-ink);
+        transition: max-height 260ms ease, margin-top 260ms ease;
+      }
+
+      .reservation.is-open {
+        max-height: 180px;
+        margin-top: 18px;
+      }
+
+      .reservation form {
+        display: grid;
+        gap: 9px;
+        max-width: 460px;
+      }
+
+      .reservation label {
+        color: var(--ink);
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .reservation input {
+        width: 100%;
+        min-height: 48px;
+        border: 1px solid rgba(37, 40, 35, 0.24);
+        border-radius: 999px;
+        padding: 0 18px;
+        color: var(--ink);
+        background: rgba(255, 252, 244, 0.72);
+      }
+
+      .reservation-note {
+        min-height: 20px;
+        margin: 0;
+        font-size: 0.9rem;
+      }
+
+      .product-field {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        min-height: 560px;
+        place-items: center;
+        isolation: isolate;
+      }
+
+      .wave {
+        position: absolute;
+        inset: 12% -12% auto -54%;
+        z-index: -2;
+        width: 166%;
+        height: 48%;
+        color: rgba(72, 106, 92, 0.72);
+        pointer-events: none;
+      }
+
+      .wave path {
+        fill: none;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .wave .trace-soft {
+        stroke: rgba(142, 169, 154, 0.2);
+        stroke-width: 13;
+      }
+
+      .wave .trace-live {
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-width: 2;
+        stroke-dasharray: 16 18;
+        transform-box: fill-box;
+        transform-origin: center;
+        animation: signalMove 6s linear infinite;
+        transition: transform 300ms ease, opacity 300ms ease;
+      }
+
+      .product-field.is-muted .trace-live,
+      .bottle:hover ~ .wave .trace-live,
+      .bottle:focus ~ .wave .trace-live {
+        opacity: 0.46;
+        transform: scaleY(0.18);
+      }
+
+      .silence-halo {
+        position: absolute;
+        z-index: -1;
+        width: min(54vw, 620px);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle, rgba(255, 255, 255, 0.92) 0 15%, rgba(255, 255, 255, 0.42) 16% 32%, rgba(142, 169, 154, 0.16) 33% 44%, transparent 61%),
+          radial-gradient(circle, rgba(183, 109, 58, 0.14), transparent 48%);
+        filter: blur(1px);
+        transform: translate(4%, -3%);
+      }
+
+      .bottle {
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: clamp(258px, 31vw, 372px);
+        height: clamp(438px, 51vw, 610px);
+        border: 0;
+        border-radius: 0;
+        padding: 0;
+        cursor: pointer;
+        background: transparent;
+        filter: drop-shadow(0 38px 54px rgba(63, 70, 61, 0.2));
+        transition: transform 280ms ease, filter 280ms ease;
+      }
+
+      .bottle:hover,
+      .bottle:focus-visible {
+        transform: translateY(-7px) rotate(-0.7deg);
+        filter: saturate(1.04) drop-shadow(0 42px 58px rgba(63, 70, 61, 0.22));
+      }
+
+      .bottle::before,
+      .bottle::after {
+        display: none;
+      }
+
+      .bottle-photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: fill;
+        pointer-events: none;
+        user-select: none;
+      }
+
+      .bottle-label {
+        position: absolute;
+        top: 49%;
+        left: 50%;
+        z-index: 2;
+        display: grid;
+        place-items: center;
+        width: 54%;
+        min-height: 24%;
+        border-top: 1px solid rgba(37, 40, 35, 0.22);
+        border-bottom: 1px solid rgba(37, 40, 35, 0.22);
+        color: var(--ink);
+        text-align: center;
+        transform: translate(-50%, -50%);
+      }
+
+      .bottle-label strong {
+        display: block;
+        font-family: var(--serif);
+        font-size: clamp(1.8rem, 3.1vw, 3.1rem);
+        font-weight: 400;
+        line-height: 0.95;
+      }
+
+      .bottle-label span {
+        display: block;
+        margin-top: 14px;
+        color: var(--soft-ink);
+        font-size: 0.66rem;
+        font-weight: 800;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+      }
+
+      .bottle-base {
+        display: none;
+      }
+
+      .pedestal-shadow {
+        position: absolute;
+        right: 16%;
+        bottom: 2%;
+        left: 16%;
+        z-index: -2;
+        height: 42px;
+        border-radius: 50%;
+        background: rgba(37, 40, 35, 0.16);
+        filter: blur(16px);
+      }
+
+      .support-cluster {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1px;
+        overflow: hidden;
+        border: 1px solid rgba(37, 40, 35, 0.12);
+        border-radius: 8px;
+        background: rgba(37, 40, 35, 0.11);
+        box-shadow: 0 18px 50px rgba(63, 70, 61, 0.08);
+      }
+
+      .support-item {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 14px;
+        align-items: start;
+        min-height: 102px;
+        padding: clamp(16px, 2vw, 22px);
+        background: var(--surface);
+        backdrop-filter: blur(18px);
+      }
+
+      .support-icon {
+        position: relative;
+        display: grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        color: var(--mineral-deep);
+      }
+
+      .support-icon svg {
+        width: 34px;
+        height: 34px;
+        stroke: currentColor;
+        stroke-width: 1.35;
+        fill: none;
+      }
+
+      .support-item h2 {
+        margin: 0;
+        color: var(--ink);
+        font-size: clamp(0.9rem, 1vw, 1rem);
+        line-height: 1.2;
+      }
+
+      .support-item p {
+        margin: 7px 0 0;
+        color: var(--soft-ink);
+        font-size: 0.9rem;
+        line-height: 1.45;
+      }
+
+      @keyframes signalMove {
+        to {
+          stroke-dashoffset: -68;
+        }
+      }
+
+      @keyframes glassDrift {
+        0%,
+        100% {
+          transform: translateX(0);
+          opacity: 0.72;
+        }
+
+        50% {
+          transform: translateX(18%);
+          opacity: 0.92;
+        }
+      }
+
+      @keyframes hushLine {
+        0%,
+        100% {
+          transform: scaleX(0.24);
+          opacity: 0.42;
+        }
+
+        50% {
+          transform: scaleX(0.84);
+          opacity: 0.78;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .page {
+          gap: 12px;
+          min-height: auto;
+          padding-bottom: 18px;
+        }
+
+        .topbar {
+          font-size: 0.68rem;
+        }
+
+        .release-note {
+          display: none;
+        }
+
+        .hero {
+          grid-template-columns: 1fr;
+          gap: 0;
+          min-height: 0;
+          padding-top: 16px;
+        }
+
+        .hero-copy {
+          max-width: 620px;
+          padding-bottom: 0;
+        }
+
+        h1 {
+          max-width: 9ch;
+          font-size: clamp(4rem, 19vw, 7rem);
+        }
+
+        .lede {
+          max-width: 460px;
+          margin-top: 18px;
+        }
+
+        .product-field {
+          min-height: clamp(320px, 56svh, 470px);
+          margin-top: -12px;
+        }
+
+        .bottle {
+          width: clamp(198px, 48vw, 292px);
+          height: clamp(322px, 76vw, 455px);
+        }
+
+        .wave {
+          inset: 10% -34% auto -42%;
+          width: 178%;
+          height: 44%;
+        }
+
+        .support-cluster {
+          grid-template-columns: 1fr;
+        }
+
+        .support-item {
+          min-height: 86px;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .page {
+          padding-inline: 16px;
+        }
+
+        .brand {
+          gap: 8px;
+        }
+
+        .brand-mark {
+          width: 22px;
+          height: 22px;
+        }
+
+        .kicker {
+          margin-bottom: 14px;
+          font-size: 0.68rem;
+        }
+
+        h1 {
+          font-size: clamp(3.6rem, 18vw, 5.2rem);
+        }
+
+        .actions {
+          gap: 10px;
+        }
+
+        .primary-cta,
+        .secondary-cta {
+          width: 100%;
+          min-height: 46px;
+          padding: 0 16px;
+          font-size: 0.72rem;
+        }
+
+        .product-field {
+          min-height: 306px;
+        }
+
+        .silence-halo {
+          width: 106vw;
+        }
+
+        .bottle-label strong {
+          font-size: 1.45rem;
+        }
+
+        .support-item {
+          grid-template-columns: 30px minmax(0, 1fr);
+          gap: 12px;
+          padding: 15px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="Stillwell release information">
+        <div class="brand" aria-label="Stillwell">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>Stillwell</span>
+        </div>
+        <div class="release-note">Release 01 - sealed quiet</div>
+      </header>
+
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="kicker">Bottled silence</p>
+          <h1 id="hero-title">Open less <span class="quiet-word">silence</span></h1>
+          <p class="lede">
+            Stillwell seals a two-minute quiet ritual inside a glass object for desks,
+            suites, and travel recovery. Uncap nothing. Let the room lower itself.
+          </p>
+          <div class="actions" aria-label="Primary actions">
+            <button class="primary-cta" type="button" aria-expanded="false" aria-controls="reservation-panel">
+              Reserve first release
+            </button>
+            <a class="secondary-cta" href="#ritual">Read the ritual</a>
+          </div>
+          <div class="reservation" id="reservation-panel" hidden>
+            <form>
+              <label for="reservation-email">Private release notice</label>
+              <input
+                id="reservation-email"
+                name="email"
+                type="email"
+                inputmode="email"
+                autocomplete="email"
+                placeholder="name@example.com"
+                aria-describedby="reservation-note"
+              >
+              <p class="reservation-note" id="reservation-note">Enter your email and press return to hold a place.</p>
+            </form>
+          </div>
+        </div>
+
+        <div class="product-field" aria-label="Stillwell Silence No. 01 product specimen">
+          <div class="silence-halo" aria-hidden="true"></div>
+          <button class="bottle" type="button" aria-label="Stillwell Silence No. 01, focus to mute the signal">
+            <img
+              class="bottle-photo"
+              src="assets/stillwell-bottle-cutout.png"
+              alt=""
+              aria-hidden="true"
+            >
+            <span class="bottle-label">
+              <strong>Silence</strong>
+              <span>No. 01 Stillwell</span>
+            </span>
+            <span class="pedestal-shadow" aria-hidden="true"></span>
+          </button>
+          <svg class="wave" viewBox="0 0 1200 260" aria-hidden="true" focusable="false">
+            <path
+              class="trace-soft"
+              d="M0 129 C78 28 154 28 232 129 C310 230 386 230 464 129 C528 48 586 58 640 112 C678 150 716 154 754 130 C808 96 858 96 914 129 C990 174 1064 174 1200 129"
+            ></path>
+            <path
+              class="trace-live"
+              d="M0 129 C78 28 154 28 232 129 C310 230 386 230 464 129 C528 48 586 58 640 112 C678 150 716 154 754 130 C808 96 858 96 914 129 C990 174 1064 174 1200 129"
+            ></path>
+          </svg>
+        </div>
+      </section>
+
+      <section class="support-cluster" id="ritual" aria-label="Stillwell ritual details">
+        <article class="support-item">
+          <span class="support-icon" aria-hidden="true">
+            <svg viewBox="0 0 40 40">
+              <path d="M13 7h14"></path>
+              <path d="M15 7v7c0 4-3 6-3 11a8 8 0 0 0 16 0c0-5-3-7-3-11V7"></path>
+              <path d="M16 24h8"></path>
+            </svg>
+          </span>
+          <div>
+            <h2>Sealed glass ritual</h2>
+            <p>A numbered bottle anchors two minutes of deliberate quiet without an app, alarm, or sound file.</p>
+          </div>
+        </article>
+        <article class="support-item">
+          <span class="support-icon" aria-hidden="true">
+            <svg viewBox="0 0 40 40">
+              <path d="M10 25h20"></path>
+              <path d="M14 18h12"></path>
+              <path d="M18 11h4"></path>
+              <path d="M20 11v21"></path>
+            </svg>
+          </span>
+          <div>
+            <h2>Desk-to-hotel scale</h2>
+            <p>Quiet enough for a nightstand, precise enough for a boardroom, and small enough to travel.</p>
+          </div>
+        </article>
+        <article class="support-item">
+          <span class="support-icon" aria-hidden="true">
+            <svg viewBox="0 0 40 40">
+              <path d="M20 8a12 12 0 1 0 12 12"></path>
+              <path d="M25 8h7v7"></path>
+              <path d="M32 8 21 19"></path>
+            </svg>
+          </span>
+          <div>
+            <h2>Refill releases by season</h2>
+            <p>Future drops change the ritual card and seal color while preserving the same quiet object language.</p>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <script>
+      const reserveButton = document.querySelector(".primary-cta");
+      const reservation = document.querySelector("#reservation-panel");
+      const form = reservation.querySelector("form");
+      const emailInput = document.querySelector("#reservation-email");
+      const note = document.querySelector("#reservation-note");
+      const bottle = document.querySelector(".bottle");
+      const productField = document.querySelector(".product-field");
+
+      reserveButton.addEventListener("click", () => {
+        const isOpen = reserveButton.getAttribute("aria-expanded") === "true";
+
+        if (isOpen) {
+          reservation.classList.remove("is-open");
+          reserveButton.setAttribute("aria-expanded", "false");
+          window.setTimeout(() => {
+            reservation.hidden = true;
+          }, 260);
+          return;
+        }
+
+        reservation.hidden = false;
+        window.requestAnimationFrame(() => {
+          reservation.classList.add("is-open");
+          reserveButton.setAttribute("aria-expanded", "true");
+        });
+        window.setTimeout(() => emailInput.focus(), 180);
+      });
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const email = emailInput.value.trim();
+        if (!email || !emailInput.checkValidity()) {
+          note.textContent = "Use a valid email to hold a place in the private release.";
+          emailInput.focus();
+          return;
+        }
+
+        note.textContent = "Place held. The first release note will arrive quietly.";
+        emailInput.value = "";
+      });
+
+      const mute = () => productField.classList.add("is-muted");
+      const unmute = () => productField.classList.remove("is-muted");
+
+      bottle.addEventListener("mouseenter", mute);
+      bottle.addEventListener("mouseleave", unmute);
+      bottle.addEventListener("focus", mute);
+      bottle.addEventListener("blur", unmute);
+    </script>
+  </body>
+</html>

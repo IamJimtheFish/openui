@@ -19,6 +19,7 @@ Open the [examples gallery](https://iamjimthefish.github.io/landing-page-design-
 | Example                  | Preview                                                                                                                | Prompt or design source                                  |
 | ------------------------ | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
 | ClippyGPT Bad Advice     | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/clippygpt-bad-advice/)        | [Design](examples/clippygpt-bad-advice/design.md)        |
+| Stillwell Bottled Silence | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/stillwell-bottled-silence/)   | [Design](examples/stillwell-bottled-silence/design.md)   |
 | LTT Drop-Test Department | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/ltt-drop-test-department/)    | [Design](examples/ltt-drop-test-department/design.md)    |
 | Ship Happens             | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/ship-happens-terminal-comic/) | [Prompt](examples/ship-happens-terminal-comic/prompt.md) |
 
