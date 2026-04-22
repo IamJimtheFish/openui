@@ -19,7 +19,7 @@ Open the [examples gallery](https://iamjimthefish.github.io/landing-page-design-
 | LTT Drop-Test Department | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/ltt-drop-test-department/) | [Design](examples/ltt-drop-test-department/design.md) |
 | Ship Happens | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/ship-happens-terminal-comic/) | [Prompt](examples/ship-happens-terminal-comic/prompt.md) |
 
-## Used in chatgpt.com web page, extende reasoning
+## Used in chatgpt.com web page, extended reasoning, all prompts are same just different topic/style input
 | Example | Preview | Prompt or design source |
 | --- | --- | --- |
 | Mnemonic Glitch | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/mnemonic-glitch/) | [Prompt](examples/mnemonic-glitch/prompt.md) |
@@ -27,8 +27,6 @@ Open the [examples gallery](https://iamjimthefish.github.io/landing-page-design-
 | Tiny Truce Club | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/tiny-truce-club/) | [Prompt](examples/tiny-truce-club/prompt.md) |
 | Theo Clears the Feed | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/theo-clears-feed/) | No prompt included |
 | Theo t3.gg | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/theo-t3gg/) | No prompt included |
-| LTT Drop-Test Department | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/ltt-drop-test-department/) | [Design](examples/ltt-drop-test-department/design.md) |
-| Ship Happens | [Preview](https://iamjimthefish.github.io/landing-page-design-codex-marketplace/examples/ship-happens-terminal-comic/) | [Prompt](examples/ship-happens-terminal-comic/prompt.md) |
 
 Playwright can help a lot for visual QA: use it to open every generated route, capture desktop and mobile screenshots, check console errors, and catch overflow or overlap before calling a page done.
 
