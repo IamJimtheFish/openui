@@ -1,7 +1,7 @@
 {
   "name": "landing-page-design-plugin",
-  "version": "0.1.2",
-  "description": "High-concept landing page workflow for Codex with repo AGENTS.md seeding and mandatory design.md planning before implementation.",
+  "version": "0.1.3",
+  "description": "High-concept landing page workflow for Codex with repo AGENTS.md seeding, mandatory design.md planning, and multi-variant quality gates.",
   "author": {
     "name": "OpenAI ChatGPT user package",
     "email": "support@openai.com",
@@ -21,7 +21,7 @@
   "interface": {
     "displayName": "Landing Page Design",
     "shortDescription": "Write design.md first, then build one or more high-concept landing pages.",
-    "longDescription": "Ensures repo-level AGENTS.md guidance exists, resolves all landing page inputs first, writes a concrete design.md with one section per variant, then implements each page from that plan.",
+    "longDescription": "Ensures repo-level AGENTS.md guidance exists, resolves all landing page inputs first, writes a concrete design.md with one section and composition contract per variant, then implements each page from that plan with batch quality gates for larger variant sets.",
     "developerName": "OpenAI ChatGPT user package",
     "category": "Design",
     "capabilities": [

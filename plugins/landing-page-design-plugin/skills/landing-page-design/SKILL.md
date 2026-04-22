@@ -60,10 +60,32 @@ When a task asks for any of the following, use the `landing-page-design` skill b
    - do not copy one variant's input set into another
    - a variant is invalid if it differs only by palette, copy polish, spacing, or superficial decoration
    - each variant must represent a materially different concept direction
+   - each variant must define a distinct composition contract, not only distinct copy
 7. After `design.md` is written, implement the page variants one by one in the same order they appear in `design.md`.
-8. Do not invent proof assets, fake metrics, fake testimonials, fake logos, or fake screenshots.
-9. Keep support highlights in one lower support cluster only.
-10. Do not use cardified hero layouts, floating sub-surfaces, or generic SaaS dashboard patterns unless the topic explicitly requires that artifact.
+8. For four or more variants, implement and inspect variants in batches of at most three before continuing.
+9. Do not invent proof assets, fake metrics, fake testimonials, fake logos, or fake screenshots.
+10. Keep support highlights in one lower support cluster only.
+11. Do not use cardified hero layouts, floating sub-surfaces, or generic SaaS dashboard patterns unless the topic explicitly requires that artifact.
+12. Before final response, compare all variants together and revise any that feel weaker, repetitive, or merely reskinned.
+
+## Multi-Variant Quality Gates
+
+For four or more variants:
+
+- Add a composition contract for every variant in `design.md`: hero archetype, first-viewport structure, primary visual/proof artifact, interaction behavior, and reuse boundary.
+- Work in implementation batches of at most three variants.
+- Before each batch, reread the relevant `design.md` sections.
+- After each batch, visually inspect desktop and mobile screenshots for every route in the batch before continuing.
+- Shared CSS, JS, components, or templates are allowed only for infrastructure such as resets, routing, navigation, basic accessibility helpers, and small utilities.
+- Do not implement a large multi-variant request as one generic data-driven page renderer unless each variant still has a custom hero composition, custom visual/proof artifact, and custom interaction behavior.
+- Do not let later variants become "same layout plus different copy."
+- Ensure the first viewport shows the dominant hero and a hint of the next section on common desktop and mobile sizes unless the user explicitly requests a full-screen hero.
+
+Final comparative gate:
+
+- Review all variants side by side or in a fast route sweep.
+- Confirm each variant has a distinct first impression, composition, visual/proof artifact, and interaction behavior.
+- Revise later variants if they have degraded into thinner versions of earlier variants.
 
 ## Implementation policy
 
@@ -124,6 +146,7 @@ Before generating any page code, create or replace `/design.md`.
 - one top-level title
 - one section per variant in order
 - a resolved input list for each variant
+- a composition contract for each variant
 - the fully filled master prompt for each variant
 - the intended output file path for each variant
 
@@ -145,6 +168,13 @@ Use this structure exactly:
 - Proof assets: ...
 - Motion intensity: ...
 
+### Composition contract
+- Hero archetype: centered | asymmetrical | immersive
+- First-viewport structure: concrete description of how headline, proof/visual artifact, CTAs, and the next-section hint fit in the first viewport
+- Primary visual/proof artifact: concrete topic-native artifact; write `none` only when the concept is typography-led
+- Interaction behavior: concrete CTA or hero feedback behavior, or `none`
+- Reuse boundary: what may be shared with other variants and what must be custom for this variant
+
 ### Filled generation prompt
 [paste the full master prompt with all placeholders replaced by concrete values for this variant]
 
@@ -157,6 +187,8 @@ Validation rules:
 - No square-bracket placeholders may remain.
 - No variant may be a near-duplicate of another.
 - Differences must affect concept, audience framing, offer framing, interaction model, visual logic, or composition strategy — not only color.
+- A variant is under-specified if its composition contract would still work after swapping in another variant's topic name.
+- For five or more variants, include enough first-viewport specificity to prevent later variants from collapsing into the same layout.
 
 ## Phase 4 — Implement
 
@@ -170,11 +202,39 @@ Rules:
 - Follow `/design.md` exactly
 - Do not silently drift from the resolved inputs
 - Do not merge variants together
+- For four or more variants, work in implementation batches of at most three variants:
+  - before each batch, reread the relevant `design.md` sections
+  - after each batch, inspect the produced pages visually before implementing the next batch
+  - if a variant is weaker than earlier variants, fix it immediately instead of carrying the weakness forward
+- Shared CSS, JS, components, or templates are allowed only for infrastructure such as resets, routing, navigation, basic accessibility helpers, and small utilities.
+- Do not implement a large multi-variant request as one generic data-driven page renderer unless each variant still has a custom hero composition, custom visual/proof artifact, and custom interaction behavior.
+- Do not let later variants become "same layout plus different copy."
 - Keep one dominant hero
 - Keep one coherent visual world per variant
+- Ensure the first viewport shows the dominant hero and a hint of the next section on common desktop and mobile sizes unless the user explicitly requests a full-screen hero.
 - Keep support highlights in one lower cluster only
 - Do not introduce fake proof
 - Do not introduce generic SaaS UI patterns unless the variant explicitly calls for them
+
+## Phase 5 — Quality gates
+
+Run quality gates after each implementation batch and again before final response.
+
+Functional gate:
+- run the cheapest syntax/build check available for the project
+- open every route implemented in the batch
+- check for console errors, broken navigation, CTA behavior, keyboard focus visibility, and horizontal overflow
+
+Visual gate:
+- capture desktop and mobile screenshots for every route implemented in the batch
+- inspect the screenshots directly
+- verify text fits, hero hierarchy is clear, CTAs are visible, the next-section hint is visible, and the page does not have incoherent overlap
+- compare the batch against earlier variants and revise any variant that feels generic, repetitive, under-composed, or obviously weaker
+
+Final comparative gate:
+- review all variants side by side or in a fast route sweep
+- confirm each variant has a distinct first impression, composition, visual/proof artifact, and interaction behavior
+- if later variants have degraded into thinner versions of earlier variants, revise them before final response
 
 # Master prompt to render into design.md
 

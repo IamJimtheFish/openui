@@ -14,6 +14,13 @@
 - Proof assets: none
 - Motion intensity: Rich but controlled
 
+### Composition contract
+- Hero archetype: immersive
+- First-viewport structure: Oversized kiln-temperature headline on the left, live firing graph and clay-body specimen artifact on the right, primary and secondary CTAs below the copy, with the lower support cluster peeking into the first viewport.
+- Primary visual/proof artifact: Topic-native kiln control surface and clay specimen, using only invented interface labels and no fake outcome metrics.
+- Interaction behavior: Primary CTA marks the application as started; secondary CTA reveals the firing schedule structure.
+- Reuse boundary: May share reset styles, navigation, and accessibility helpers with other variants; hero artifact, layout rhythm, and CTA behavior must be custom.
+
 ### Filled generation prompt
 [full prompt with all placeholders replaced goes here]
 

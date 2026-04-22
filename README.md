@@ -47,6 +47,7 @@ It is designed for landing-page generation workflows where Codex must:
 4. create separate resolved inputs for every requested variant
 5. avoid fake proof and generic SaaS drift
 6. implement each page **from `design.md`**, one by one
+7. for larger variant sets, work in small batches with visual quality gates so later variants do not degrade into reskins
 
 ---
 
@@ -61,10 +62,10 @@ It is designed for landing-page generation workflows where Codex must:
 - `repo-files/AGENTS.md`  
   Optional repo-level rules reference. The skill can create or append this guidance automatically.
 - `repo-files/design.md.example`  
-  Example shape of the design plan file.
+  Example shape of the design plan file, including the per-variant composition contract.
 - `repo-files/TARGET_REPO_SETUP.md`  
   Short instructions for the target repository.
-- `examples/`
+- `examples/`  
   Previewable generated examples, each in its own folder with its prompt or design notes when available.
 
 ---
@@ -131,8 +132,10 @@ The skill should then:
 
 - create `/design.md`
 - resolve inputs independently for each variant
+- write a composition contract for each variant
 - keep variants materially different
 - implement variants one by one from the design plan
+- for four or more variants, inspect desktop and mobile screenshots in batches of at most three before continuing
 
 ---
 
@@ -141,3 +144,4 @@ The skill should then:
 - The skill preserves user-specified inputs when present.
 - When inputs are missing, the skill resolves them before writing `design.md`.
 - For multi-variant requests, the skill re-resolves every input for every variant instead of reusing one inferred set.
+- For larger multi-variant requests, the skill discourages a single generic renderer unless every variant still has a custom hero composition, visual/proof artifact, and interaction behavior.

@@ -16,4 +16,6 @@ Expected repo behavior after setup:
 - Codex creates `/design.md` first
 - Codex fills all prompt inputs with concrete values
 - Codex resolves inputs separately for each variant
+- Codex adds a composition contract for every variant
 - Codex implements the pages from `/design.md` in order
+- For four or more variants, Codex works in batches of at most three and visually inspects desktop and mobile screenshots before continuing
