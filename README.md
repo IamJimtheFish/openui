@@ -1,12 +1,6 @@
 # OpenUI Codex Package
 
-This package is a **local Codex plugin** that exposes one installable plugin:
-
-- `openui`
-
-The plugin contains one skill:
-
-- `openui`
+This package is a **local Codex plugin** that exposes one installable plugin with same named skill: - `openui`
 
 ---
 
@@ -36,6 +30,35 @@ Open the [examples gallery](https://iamjimthefish.github.io/openui/) or preview 
 Playwright can help a lot for visual QA: use it to open every generated route, capture desktop and mobile screenshots, check console errors, and catch overflow or overlap before calling a page done.
 
 The imagegen skill can also help a lot when the page needs topic-native hero images, proof artifacts, textures, product shots, or other bitmap assets that should not be faked with generic placeholders.
+
+---
+
+## Suggested usage prompt in Codex
+
+Example:
+
+```text
+Create 3 landing page variants for an AI-native interior design studio.
+Use the openui workflow.
+```
+
+The skill should then:
+
+- create `/design.md`
+- resolve inputs independently for each variant
+- write a composition contract for each variant
+- keep variants materially different
+- implement variants one by one from the design plan
+- for four or more variants, inspect desktop and mobile screenshots in batches of at most three before continuing
+
+---
+
+## Notes
+
+- The skill preserves user-specified inputs when present.
+- When inputs are missing, the skill resolves them before writing `design.md`.
+- For multi-variant requests, the skill re-resolves every input for every variant instead of reusing one inferred set.
+- For larger multi-variant requests, the skill discourages a single generic renderer unless every variant still has a custom hero composition, visual/proof artifact, and interaction behavior.
 
 ---
 
@@ -118,30 +141,3 @@ If you want this plugin available only to one repository:
 4. Restart Codex.
 
 ---
-
-## Suggested usage prompt in Codex
-
-Example:
-
-```text
-Create 3 landing page variants for an AI-native interior design studio.
-Use the openui workflow.
-```
-
-The skill should then:
-
-- create `/design.md`
-- resolve inputs independently for each variant
-- write a composition contract for each variant
-- keep variants materially different
-- implement variants one by one from the design plan
-- for four or more variants, inspect desktop and mobile screenshots in batches of at most three before continuing
-
----
-
-## Notes
-
-- The skill preserves user-specified inputs when present.
-- When inputs are missing, the skill resolves them before writing `design.md`.
-- For multi-variant requests, the skill re-resolves every input for every variant instead of reusing one inferred set.
-- For larger multi-variant requests, the skill discourages a single generic renderer unless every variant still has a custom hero composition, visual/proof artifact, and interaction behavior.
