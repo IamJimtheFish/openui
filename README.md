@@ -18,10 +18,10 @@ Open the [examples gallery](https://iamjimthefish.github.io/openui/) or preview 
 
 | Example                  | Preview                                                                                                                | Prompt or design source                                  |
 | ------------------------ | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| ClippyGPT Bad Advice     | [Preview](https://iamjimthefish.github.io/openui/examples/clippygpt-bad-advice/)        | [Design](examples/clippygpt-bad-advice/design.md)        |
-| Stillwell Bottled Silence | [Preview](https://iamjimthefish.github.io/openui/examples/stillwell-bottled-silence/)   | [Design](examples/stillwell-bottled-silence/design.md)   |
-| LTT Drop-Test Department | [Preview](https://iamjimthefish.github.io/openui/examples/ltt-drop-test-department/)    | [Design](examples/ltt-drop-test-department/design.md)    |
-| Ship Happens             | [Preview](https://iamjimthefish.github.io/openui/examples/ship-happens-terminal-comic/) | [Prompt](examples/ship-happens-terminal-comic/prompt.md) |
+| ClippyGPT Bad Advice     | [Preview](https://iamjimthefish.github.io/openui/examples/clippygpt-bad-advice/)        | Design a Y2K-style landing page for ClippyGPT — fake assistant that gives unhelpful life advice.@landing-page-design-plugin Use glossy UI, retro gradients, chrome effects, old-software vibes, and playful but polished layout|
+| Stillwell Bottled Silence | [Preview](https://iamjimthefish.github.io/openui/examples/stillwell-bottled-silence/)   | Design a premium landing page for a startup that sells bottled silence.@landing-page-design-plugin   |
+| LTT Drop-Test Department | [Preview](https://iamjimthefish.github.io/openui/examples/ltt-drop-test-department/)    | Create a parody landing page about an AI code leak, but make it look like a real product launch, you can use imagengen if needed. @landing-page-design-plugin |
+| Ship Happens             | [Preview](https://iamjimthefish.github.io/openui/examples/ship-happens-terminal-comic/) |Design a meme-worthy bug tracker for developers. @landing-page-design-plugin |
 
 ## Used in chatgpt.com web page, extended reasoning, all prompts are same just different topic/style input
 
