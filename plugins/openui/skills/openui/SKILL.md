@@ -135,7 +135,7 @@ Rules:
 - Variants must differ conceptually, not just cosmetically.
 - If the overall topic is fixed by the user, create different topic angles or framings within that topic instead of changing the topic entirely.
 - Never invent proof assets. If none are provided and none are credibly available from the prompt, write `none`.
-- If motion intensity is not specified by the user, use `Rich but controlled`.
+- If motion intensity is not specified by the user, use `Ambient`.
 
 ## Phase 3 — Create `/design.md`
 
@@ -170,7 +170,7 @@ Use this structure exactly:
 
 ### Composition contract
 - Hero archetype: centered | asymmetrical | immersive
-- First-viewport structure: concrete description of how headline, proof/visual artifact, CTAs, and the next-section hint fit in the first viewport
+- First-viewport structure: concrete description of how headline, proof/visual artifact, optional CTA(s), and any next-section hint fit in the first viewport
 - Primary visual/proof artifact: concrete topic-native artifact; write `none` only when the concept is typography-led
 - Interaction behavior: concrete CTA or hero feedback behavior, or `none`
 - Reuse boundary: what may be shared with other variants and what must be custom for this variant
@@ -211,8 +211,8 @@ Rules:
 - Do not let later variants become "same layout plus different copy."
 - Keep one dominant hero
 - Keep one coherent visual world per variant
-- Ensure the first viewport shows the dominant hero and a hint of the next section on common desktop and mobile sizes unless the user explicitly requests a full-screen hero.
-- Keep support highlights in one lower cluster only
+- When the concept benefits from a next-section hint, ensure the first viewport shows the dominant hero and that hint on common desktop and mobile sizes; a full-screen hero is allowed when it is clearly stronger.
+- Keep support highlights in one lower cluster only when used
 - Do not introduce fake proof
 - Do not introduce generic SaaS UI patterns unless the variant explicitly calls for them
 
@@ -223,12 +223,12 @@ Run quality gates after each implementation batch and again before final respons
 Functional gate:
 - run the cheapest syntax/build check available for the project
 - open every route implemented in the batch
-- check for console errors, broken navigation, CTA behavior, keyboard focus visibility, and horizontal overflow
+- check for console errors, broken navigation, CTA behavior when present, keyboard focus visibility, and horizontal overflow
 
 Visual gate:
 - capture desktop and mobile screenshots for every route implemented in the batch
 - inspect the screenshots directly
-- verify text fits, hero hierarchy is clear, CTAs are visible, the next-section hint is visible, and the page does not have incoherent overlap
+- verify text fits, hero hierarchy is clear, CTA(s) are visible when present, any intentional next-section hint is visible, and the page does not have incoherent overlap
 - compare the batch against earlier variants and revise any variant that feels generic, repetitive, under-composed, or obviously weaker
 
 Final comparative gate:
@@ -238,41 +238,29 @@ Final comparative gate:
 
 # Master prompt to render into design.md
 
-Create one high-concept landing page for [Topic].
+Create one high-concept page for [Topic].
 
 ## Inputs
 - Topic: [Topic].
 - Offer: [What is being offered. If missing, infer one plausible offer and stay consistent.]
 - Audience: [Who it is for. If missing, infer one clear primary audience.]
 - Primary user action: [What is the single most important thing the visitor should do next? Examples: explore, sign up, book, join, apply, RSVP, compare, configure, browse, watch, listen, read, download, buy, request access, contact, start demo, view schedule, view collection, submit.]
-- Deliverable: [Single-file HTML with embedded CSS and JS | React component. If missing, choose the most appropriate format for the concept and return only that.]
-- Style direction: [Optional. Choose one dominant direction and use it consistently. Representative anchors: Swiss, Editorial, Organic, Airy, Playful, Glitch, Bauhaus, Industrial, Terminal, Synthwave. You may choose another single direction if it fits the topic better.]
+- Deliverable: [Single-file HTML with embedded CSS and JS | React component. If missing, choose the most appropriate format and return only that.]
+- Style direction: [Optional. Choose one dominant direction and use it consistently. Examples: Swiss, Editorial, Organic, Airy, Playful, Glitch, Bauhaus, Industrial, Terminal, Synthwave.]
 - Tonal key: [Optional. Light / Mid / Dark / Topic-derived. If missing, choose the strongest topic-native tonal key.]
-- Icon policy: [Optional. None / Minimal / Expressive / Topic-native / Auto-if-useful. If missing, use icons only when they improve scanability, recognition, or support clarity.]
+- Icon policy: [Optional. None / Minimal / Expressive / Topic-native / Auto-if-useful.]
 - Proof assets: [Optional. Real numbers, testimonials, screenshots, product surfaces, physical artifacts, references, or none.]
-- Motion intensity: [Optional. Minimal / Ambient / Rich but controlled. Rich but controlled by default.]
+- Motion intensity: [Optional. None / Minimal / Ambient / Rich but controlled. Ambient by default.]
 
 ## Objective
-Design one premium, memorable landing page concept with a dominant hero and one coherent visual world derived from the topic itself.
-The page should feel specific, intentional, and conversion-minded, not like a generic startup or SaaS template.
+Design one premium, memorable page with a dominant hero and one coherent visual world derived from the topic itself.
+The result should feel specific, intentional, and action-oriented when the concept calls for action, not like a generic startup or SaaS template.
 
 Choose the strongest clear solution.
 Do not collapse the concept into a simpler generic pattern just to make execution easier.
 
-## Effort and resolution policy
-- Do not infer that the task is simple merely because the deliverable is a single file, a direct chat response, or a self-contained component.
-- Output directness is not a signal to reduce conceptual ambition, visual specificity, interaction richness, implementation care, or production quality.
-- Even when the final deliverable is concise, resolve the concept fully rather than defaulting to the quickest acceptable structure.
 - Treat single-file execution as a packaging constraint, not a creative constraint.
-- Prefer the strongest fully resolved concept that fits the constraints, not the fastest concept that merely fits in one file.
-
-## Ambition and scope discipline
-- Do not treat missing implementation detail as permission to reduce conceptual ambition, visual specificity, or interaction richness when the concept clearly benefits from them.
-- Prefer the simplest structure that preserves the strongest concept, not the simplest structure that merely satisfies the rules.
-- Do not add extra content sections unless they are structurally necessary.
-- If conceptual depth is needed, absorb it into the hero, proof gesture, support highlight copy, CTA behavior, or background logic rather than creating a new section by default.
-- When choosing between restraint and richness, keep the stronger topic-native idea and remove only what weakens clarity, hierarchy, or credibility.
-- Implementation simplicity is not a goal by itself. Concept strength, coherence, and usability take priority.
+Do not reduce conceptual ambition, visual specificity, interaction richness, or production quality merely because the deliverable is concise.
 
 ## Internal concept choice
 Before composing, decide internally:
@@ -280,51 +268,47 @@ Before composing, decide internally:
 - one dominant proof mode: none / embedded gesture / single artifact
 - one palette driver derived from the topic
 - one tonal key: light / mid / dark / topic-derived
-- one motion role: minimal / ambient / interactive
+- one motion role: none / minimal / ambient / interactive
 - one icon approach: none / minimal / expressive / topic-native
-- optionally one secondary accent only if it strengthens the dominant direction without creating a second visual world
-
-The secondary accent may adjust rhythm, detail, or interaction, but must not introduce a second layout model, second proof system, or second style direction.
+- optionally one secondary accent only if it strengthens the main direction without creating a second visual world
 Do not output this planning.
 
 ## Non-negotiables
 - Use a strong hero-first composition.
-- Headline: 3–12 words, max 3 lines.
-- Supporting copy: 1–2 short sentences, concise, specific.
-- CTAs: exactly 1 primary and 1 secondary.
+- Headline: 3-12 words, max 3 lines.
+- Supporting copy: 1-2 short sentences, concise and specific.
+- CTAs are optional. If used, include at most 1 primary and 1 secondary CTA.
+- If a clear next step is central to the offer or concept, include a CTA; otherwise CTA omission is allowed.
 - CTA labels must be specific to the offer and action, not generic.
-- Supporting highlights: shown only in a single lower support cluster beneath the hero.
+- Supporting highlights are optional. If used, show them only once in a single lower support cluster beneath the hero.
 - Keep the hero dominant, focused, readable, and uncluttered.
 - Proof is optional. Use it only if it clearly strengthens the concept.
 - If no real proof assets are provided, do not invent metrics, testimonials, customer logos, screenshots, or fake UI proof.
-- CTA behavior may be simple or richer, but it should fit the offer; do not default to generic anchor-link behavior if a more specific interaction model would strengthen the concept.
+- Prefer depth inside the hero, proof gesture, CTA behavior, support copy, or background logic rather than adding extra sections by default.
 
 ## Composition
-- A centered hero is allowed, not required.
-- Choose the clearest structure for the topic; do not default to left-text / right-visual or automatic two-column marketing layouts.
-- The hero may be a fully integrated composition rather than a separate object or framed block.
+- Choose the clearest structure for the topic; do not default to generic two-column marketing layouts.
+- The hero may be fully integrated rather than framed.
 - The hero does not need to become a panel, dashboard, device mockup, rounded card, or floating showcase unless the topic genuinely demands that artifact.
-- Build hierarchy through scale, contrast, spacing, alignment, overlap, rhythm, and composition before using frames, dividers, or containers.
+- Build hierarchy through scale, contrast, spacing, alignment, depth, rhythm, and composition before using frames, dividers, or containers.
 - Keep supporting content clearly subordinate to the hero.
-- Do not interpret structural restraint as a reason to flatten the concept into a generic or minimal default.
+- Do not interpret structural restraint as permission to flatten the concept into a generic minimal layout.
+- Do not use text-on-text layering, typographic collisions, or overlapping live text as a compositional device.
 
 ## Visual system
 - Build one coherent visual world derived from the topic itself.
-- Treat style as design logic, not decorative skin. It should shape typography, spacing, contrast, geometry, motion, and proof language.
-- Derive palette character, accents, contrast behavior, motifs, materials, and shape language from the topic.
-- Even restrained palettes must feel specific and intentional, not generic premium-neutral.
+- Let the topic drive palette, contrast, typography, spacing, geometry, motifs, materials, and motion.
+- Even restrained palettes must feel intentional and specific, not generic premium-neutral.
 - The background must actively contribute mood, depth, and topic logic.
-- If the topic suggests a real system language, structural logic, physical behavior, or interface grammar, show that logic directly instead of using generic abstract-tech decoration.
-- Treat headline typography as an active part of the visual system, not as neutral text.
-- The headline may use topic-derived color, selective color emphasis, multi-tone treatment, or gradient accents when they strengthen the concept and remain readable.
-- Do not default the headline to white, near-white, black, or neutral text unless that is clearly the strongest topic-native choice.
-- One or two key words may receive differentiated treatment through color, gradient, outline, texture, contrast shift, or other topic-native emphasis, as long as hierarchy stays clear.
+- If the topic suggests a real system language, physical behavior, or interface grammar, show that directly instead of generic abstract-tech decoration.
+- Treat headline typography as part of the concept, not neutral text.
+- The headline may use topic-derived color, selective emphasis, multi-tone treatment, or gradient accents when they strengthen the concept and remain readable.
+- Do not default the headline to neutral black, white, or near-white unless that is clearly the strongest topic-native choice.
 
 ## Background and tonal diversity
-- Premium, high-concept, and atmospheric design may be expressed through light, mid-tone, or dark visual worlds; do not default to dark.
-- Choose the tonal key from the topic, offer, audience, and style direction rather than from default cinematic or tech aesthetics.
-- When a light or bright world is stronger, use it confidently.
-- Contrast may come from hue, saturation, temperature, texture, scale, spacing, or density, not only from darkness.
+- Premium and atmospheric design may be light, mid-tone, or dark; do not default to dark.
+- Choose the tonal key from the topic, offer, audience, and style direction rather than from generic cinematic or tech aesthetics.
+- Contrast may come from hue, saturation, temperature, texture, density, or scale, not only darkness.
 
 ## Proof and concept expression
 - Prefer the minimum visual evidence needed to make the idea feel specific, credible, and native to the topic.
@@ -342,31 +326,27 @@ Do not output this planning.
 - Use icons only when they improve scanability, recognition, navigation, proof clarity, or support-cluster legibility.
 - Prefer topic-native icon logic over generic startup glyphs.
 - Keep icon style consistent in stroke weight, geometry, corner logic, and detail level.
-- Use icons primarily in the lower support cluster or other clearly secondary roles unless a single topic-native symbol is central to the concept.
+- Use icons primarily in clearly secondary roles unless a single topic-native symbol is central to the concept.
 - Do not let icons compete with the hero headline, proof artifact, or CTA hierarchy.
-- Avoid decorative icon spam, mismatched icon packs, emoji-like symbols, or generic feature-list pictograms.
-- If the concept is stronger without icons, omit them.
 
 ## Support cluster
-- Show supporting highlights only once, in a single lower cluster beneath the hero.
-- Each highlight should be short, fast to scan, and clearly secondary to the hero.
-- Supporting highlights may use concise icons or symbolic marks when they improve recognition and remain visually subordinate.
+- If used, show supporting highlights only once, in a single lower cluster beneath the hero.
+- Each highlight should be short, fast to scan, and clearly secondary.
+- Supporting highlights may use concise icons or symbolic marks when helpful.
+- Support-cluster elements may use subtle motion when it improves scanability, continuity, or atmosphere and remains clearly secondary.
 - Card-like grouping is allowed only inside this lower support cluster.
-- These support modules may use at most one light surface treatment, such as a subtle stroke, tonal fill, or very soft shadow.
-- Support modules must remain uniform, non-nested, and visually subordinate.
-- Do not use card-like structures in the hero, proof, CTA area, or as nested containers anywhere else on the page.
+- These modules may use at most one light surface treatment, such as a subtle stroke, tonal fill, or very soft shadow.
+- Keep support modules uniform, non-nested, and visually subordinate.
+- Do not use card-like structures in the hero, proof, CTA area, or elsewhere on the page.
 
 ## Motion
 - Motion is optional.
-- Use motion only when it supports hierarchy, continuity, feedback, or atmosphere.
-- Default motion role is ambient unless the inputs justify a stronger intensity.
-- Motion may also live inside typography when it fits the topic and style direction.
+- Use motion only when it supports hierarchy, continuity, feedback, atmosphere, or topic logic.
+- Default to none, minimal, or ambient motion depending on what the concept actually needs.
+- Motion may live in typography, background behavior, proof logic, support-cluster behavior, or interaction feedback.
 - A single key word or short phrase may use subtle text-based motion such as glitch, flicker, jitter, scanline shift, chromatic split, text scramble, pulse, or reveal if it strengthens the concept.
-- Prefer one focal animated word or accent treatment rather than animating the entire headline continuously.
-- Keep typographic motion controlled, readable, and subordinate to clarity.
-- Do not let motion delay access to the headline, copy, or CTAs.
-- Keep interaction-critical motion brief, clear, and subtle.
-- Avoid scrolljacking, attention-hijacking motion, and ornamental animation loops.
+- Keep motion controlled, readable, non-blocking, and subordinate to clarity.
+- Avoid scrolljacking, attention-hijacking loops, and ornamental animation.
 - Respect reduced-motion preferences.
 
 ## Accessibility and readability
@@ -374,27 +354,26 @@ Do not output this planning.
 - Maintain sufficient contrast between text and background.
 - Do not place essential text over busy imagery unless readability remains strong.
 - Avoid cramped spacing, visual collisions, and weak focal hierarchy.
+- Do not place badges, pills, annotations, stickers, or floating interface fragments over essential text.
 - If the deliverable is code, use semantic HTML structure, visible focus states, keyboard-friendly interactions, and reduced-motion handling.
+- When in doubt, preserve legibility over expressive overlap.
 
 ## Anti-drift rules
 - Do not drift into bland corporate SaaS styling.
-- Do not default to generic dashboard aesthetics, feature-grid thinking, or boxed-section composition.
+- Do not default to dashboard aesthetics, feature-grid thinking, boxed-section composition, or template-like modularity.
 - Do not use disconnected motifs, random color choices, or interchangeable abstract-tech shapes.
-- Do not use card-within-card composition, nested surfaces, fake proof, or stock-looking UI.
-- Do not let the page feel template-like, compartmentalized, or overly modular.
+- Do not use card-within-card composition, nested surfaces, floating panels, fake proof, or stock-looking UI.
+- Keep one visual world, one dominant hero, and one clear structural logic.
+- Do not allow text, labels, or interface elements to overlap, collide, or sit on top of one another.
 
 ## Output
 Return only the final [Deliverable].
-Do not mistake concise delivery for permission to produce a reduced or under-resolved concept.
 
 If the deliverable is code:
 - Output a complete production-ready file or component.
 - Keep dependencies minimal unless explicitly requested.
 - Make it responsive.
-- Keep support highlights in one lower support cluster only.
-
-If the deliverable is a visual design brief:
-- Include: concept thesis, hero composition, palette logic, tonal-key logic, type direction, proof logic, icon logic, motion behavior, support cluster contents, and CTA copy.
+- Keep support highlights in one lower support cluster only when used.
 
 ## Final self-check
 Before returning, verify that the result keeps:
@@ -403,15 +382,7 @@ Before returning, verify that the result keeps:
 - no invented proof
 - no cardification outside the lower support cluster
 - no generic SaaS drift
-- no unnecessary simplification justified only by ease of execution
+- no unnecessary structural fragmentation
 - no nested containment
 - no floating sub-surfaces
-
-## Recap
-Make one clear, memorable, topic-native landing page.
-Hero first.
-One visual world.
-Specific CTAs.
-Optional proof only if justified.
-Lower support cluster.
-No generic SaaS drift.
+- all text clearly legible and comfortably spaced
