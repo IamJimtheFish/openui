@@ -288,6 +288,7 @@ Do not output this planning.
 
 ## Composition
 - Choose the clearest structure for the topic; do not default to generic two-column marketing layouts.
+- A top navigation bar is optional. When used, make it native to the chosen style direction and subordinate to the hero rather than a generic boxed header.
 - The hero may be fully integrated rather than framed.
 - The hero does not need to become a panel, dashboard, device mockup, rounded card, or floating showcase unless the topic genuinely demands that artifact.
 - Build hierarchy through scale, contrast, spacing, alignment, depth, rhythm, and composition before using frames, dividers, or containers.
