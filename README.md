@@ -35,6 +35,13 @@ The imagegen skill can also help a lot when the page needs topic-native hero ima
 
 ---
 
+A few issues I’m currently working on:
+- overlap — already fixed locally
+- hardcoded CTAs and support cluster — also fixed locally
+- headline is still a bit too busy — this one is still pending
+
+---
+
 ## Suggested usage prompt in Codex
 
 Example:
