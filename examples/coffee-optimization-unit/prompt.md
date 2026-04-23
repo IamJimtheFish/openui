@@ -1,0 +1,1 @@
+Create a blueprint-inspired landing page for “Coffee Optimization Unit”, a fake system that calculates the perfect caffeine dose for productivity. Use white linework on deep blue background, schematic diagrams, labeled components, and precise industrial layout.

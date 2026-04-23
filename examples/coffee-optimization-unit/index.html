@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Coffee Optimization Unit</title>
+  <meta name="description" content="A blueprint-inspired landing page for a fake caffeine calibration system.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2305204a'/%3E%3Cpath d='M7 16h18M16 7v18' stroke='%237ce8ff' stroke-width='2'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      --blue-950: #03152f;
+      --blue-900: #05204a;
+      --blue-800: #07356e;
+      --line: rgba(238, 250, 255, 0.94);
+      --line-dim: rgba(180, 229, 250, 0.45);
+      --cyan: #7ce8ff;
+      --amber: #ffbf58;
+      --ink: #f5fcff;
+      --muted: #bad9e9;
+      --grid: rgba(176, 229, 255, 0.11);
+      --grid-strong: rgba(176, 229, 255, 0.19);
+      --mono: "SFMono-Regular", "Cascadia Mono", "Liberation Mono", Consolas, monospace;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-width: 320px;
+      background: var(--blue-950);
+      color: var(--ink);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-family: var(--sans);
+      background:
+        radial-gradient(circle at 68% 30%, rgba(23, 101, 153, 0.42), transparent 34rem),
+        radial-gradient(circle at 12% 70%, rgba(0, 151, 190, 0.2), transparent 28rem),
+        linear-gradient(140deg, var(--blue-950), var(--blue-900) 52%, #021126);
+    }
+
+    body::before,
+    body::after {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      content: "";
+    }
+
+    body::before {
+      z-index: -2;
+      background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+        linear-gradient(var(--grid-strong) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-strong) 1px, transparent 1px);
+      background-size: 20px 20px, 20px 20px, 100px 100px, 100px 100px;
+    }
+
+    body::after {
+      z-index: -1;
+      opacity: 0.16;
+      background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.1) 0 1px, transparent 1px 5px);
+      mix-blend-mode: screen;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .page-shell {
+      position: relative;
+      min-height: 100vh;
+      isolation: isolate;
+    }
+
+    .blueprint-corner {
+      position: fixed;
+      z-index: 0;
+      width: 104px;
+      height: 104px;
+      border-color: var(--line-dim);
+      border-style: solid;
+      opacity: 0.72;
+      pointer-events: none;
+    }
+
+    .corner-tl {
+      top: 18px;
+      left: 18px;
+      border-width: 1px 0 0 1px;
+    }
+
+    .corner-br {
+      right: 18px;
+      bottom: 18px;
+      border-width: 0 1px 1px 0;
+    }
+
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 92vh;
+      padding: clamp(18px, 2.4vw, 34px) clamp(18px, 4vw, 62px) 0;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .draft-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      font-family: var(--mono);
+      color: var(--muted);
+      text-transform: uppercase;
+      font-size: clamp(0.68rem, 0.85vw, 0.84rem);
+    }
+
+    .brand-lockup {
+      display: inline-grid;
+      grid-template-columns: 34px auto;
+      align-items: center;
+      gap: 12px;
+      color: var(--ink);
+    }
+
+    .brand-mark {
+      position: relative;
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+    }
+
+    .brand-mark::before,
+    .brand-mark::after {
+      position: absolute;
+      content: "";
+      background: var(--line);
+    }
+
+    .brand-mark::before {
+      width: 16px;
+      height: 1px;
+    }
+
+    .brand-mark::after {
+      width: 1px;
+      height: 16px;
+    }
+
+    .revision-strip {
+      display: flex;
+      align-items: center;
+      gap: clamp(10px, 1.8vw, 30px);
+      white-space: nowrap;
+    }
+
+    .revision-strip span + span {
+      border-left: 1px solid var(--line-dim);
+      padding-left: clamp(10px, 1.8vw, 30px);
+    }
+
+    .hero-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 0.82fr) minmax(320px, 1.18fr);
+      align-items: center;
+      gap: clamp(20px, 4.6vw, 82px);
+      padding: clamp(34px, 6vh, 74px) 0 clamp(20px, 3vh, 34px);
+    }
+
+    .hero-copy {
+      max-width: 710px;
+    }
+
+    .sheet-index {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 22px;
+      font-family: var(--mono);
+      font-size: clamp(0.72rem, 0.88vw, 0.86rem);
+      color: var(--cyan);
+      text-transform: uppercase;
+    }
+
+    .sheet-index::before,
+    .sheet-index::after {
+      width: 38px;
+      height: 1px;
+      background: var(--cyan);
+      content: "";
+    }
+
+    h1 {
+      max-width: 11ch;
+      margin: 0;
+      color: var(--ink);
+      font-size: clamp(3.4rem, 8.1vw, 8.9rem);
+      line-height: 0.9;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      text-wrap: balance;
+    }
+
+    h1 .outline {
+      display: inline-block;
+      color: transparent;
+      -webkit-text-stroke: clamp(1px, 0.11vw, 2px) var(--cyan);
+      text-shadow: 0 0 18px rgba(124, 232, 255, 0.14);
+    }
+
+    .hero-copy p {
+      max-width: 560px;
+      margin: 26px 0 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 1.35vw, 1.2rem);
+      line-height: 1.6;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 34px;
+    }
+
+    .cta {
+      min-height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 0;
+      padding: 0 18px;
+      color: var(--ink);
+      background: transparent;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease, color 160ms ease;
+    }
+
+    .cta:focus-visible {
+      outline: 2px solid var(--amber);
+      outline-offset: 4px;
+    }
+
+    .cta:hover {
+      transform: translateY(-2px);
+    }
+
+    .cta-primary {
+      border-color: var(--cyan);
+      background:
+        linear-gradient(90deg, rgba(124, 232, 255, 0.22), rgba(124, 232, 255, 0.08)),
+        repeating-linear-gradient(90deg, transparent 0 14px, rgba(255, 255, 255, 0.08) 14px 15px);
+      box-shadow: inset 0 0 0 1px rgba(124, 232, 255, 0.16), 0 0 24px rgba(124, 232, 255, 0.13);
+    }
+
+    .cta-secondary {
+      color: var(--muted);
+      border-color: var(--line-dim);
+    }
+
+    .calibration-result {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 28px;
+      margin-top: 18px;
+      color: var(--amber);
+      font-family: var(--mono);
+      font-size: clamp(0.72rem, 0.9vw, 0.86rem);
+      text-transform: uppercase;
+    }
+
+    .calibration-result::before {
+      width: 7px;
+      height: 7px;
+      border: 1px solid currentColor;
+      content: "";
+      transform: rotate(45deg);
+      flex: 0 0 auto;
+    }
+
+    .schematic-wrap {
+      position: relative;
+      margin: 0;
+      min-height: clamp(400px, 61vh, 670px);
+    }
+
+    .schematic-wrap.labels-muted .bp-text:not(.amber) {
+      opacity: 0.28;
+    }
+
+    .blueprint-svg {
+      width: 100%;
+      height: 100%;
+      min-height: inherit;
+      overflow: visible;
+      filter: drop-shadow(0 0 16px rgba(124, 232, 255, 0.09));
+    }
+
+    .bp-line {
+      fill: none;
+      stroke: var(--line);
+      stroke-width: 1.45;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .bp-line.dim {
+      stroke: var(--line-dim);
+      stroke-width: 1;
+    }
+
+    .bp-line.cyan {
+      stroke: var(--cyan);
+    }
+
+    .bp-line.amber {
+      stroke: var(--amber);
+    }
+
+    .bp-fill {
+      fill: rgba(124, 232, 255, 0.055);
+      stroke: var(--line);
+      stroke-width: 1.2;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .bp-text {
+      fill: var(--line);
+      font-family: var(--mono);
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-shadow: 0 0 6px var(--blue-950), 0 0 10px var(--blue-950);
+      transition: opacity 200ms ease;
+    }
+
+    .bp-text.dim {
+      fill: var(--muted);
+      font-size: 11px;
+    }
+
+    .bp-text.amber {
+      fill: var(--amber);
+      font-size: 14px;
+    }
+
+    .dose-liquid {
+      fill: rgba(255, 191, 88, 0.15);
+      stroke: var(--amber);
+      stroke-width: 1.1;
+      transform-origin: center;
+      transition: transform 520ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 300ms ease;
+    }
+
+    .gauge-needle {
+      transform-origin: 560px 420px;
+      transition: transform 700ms cubic-bezier(0.2, 0.85, 0.2, 1);
+    }
+
+    .signal-dot {
+      fill: var(--amber);
+      filter: drop-shadow(0 0 7px rgba(255, 191, 88, 0.75));
+    }
+
+    .flow-path {
+      stroke-dasharray: 8 12;
+      animation: dash-flow 9s linear infinite;
+    }
+
+    .tick-orbit {
+      animation: tick-pulse 3.8s ease-in-out infinite;
+      transform-origin: 560px 420px;
+    }
+
+    .hero.calibrating .dose-liquid {
+      transform: scaleY(1.16);
+      opacity: 0.95;
+    }
+
+    .hero.calibrating .signal-dot {
+      animation: signal-pop 520ms ease;
+    }
+
+    .support-cluster {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1px;
+      max-width: 1180px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0;
+      border-top: 1px solid var(--line-dim);
+      border-left: 1px solid var(--line-dim);
+      list-style: none;
+    }
+
+    .support-item {
+      min-height: 118px;
+      padding: clamp(16px, 2vw, 24px);
+      border-right: 1px solid var(--line-dim);
+      border-bottom: 1px solid var(--line-dim);
+      background: rgba(3, 21, 47, 0.38);
+      display: grid;
+      align-content: center;
+      gap: 10px;
+    }
+
+    .support-item b {
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: clamp(0.72rem, 0.88vw, 0.86rem);
+      text-transform: uppercase;
+    }
+
+    .support-item p {
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(0.86rem, 1vw, 0.98rem);
+      line-height: 1.45;
+    }
+
+    .mini-symbol {
+      width: 44px;
+      height: 18px;
+      color: var(--cyan);
+    }
+
+    .section-band {
+      position: relative;
+      z-index: 1;
+      padding: clamp(44px, 7vw, 96px) clamp(18px, 4vw, 62px) clamp(60px, 7vw, 98px);
+    }
+
+    .industrial-note {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 0.62fr 1fr;
+      gap: clamp(26px, 5vw, 86px);
+      align-items: end;
+      border-top: 1px solid var(--line-dim);
+      padding-top: clamp(24px, 4vw, 46px);
+      font-family: var(--mono);
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .industrial-note h2 {
+      margin: 0;
+      color: var(--line);
+      font-size: clamp(1.4rem, 2.4vw, 2.7rem);
+      line-height: 1.05;
+      text-wrap: balance;
+    }
+
+    .industrial-note p {
+      margin: 0;
+      font-size: clamp(0.78rem, 1vw, 0.94rem);
+      line-height: 1.7;
+      max-width: 650px;
+    }
+
+    @keyframes dash-flow {
+      to {
+        stroke-dashoffset: -160;
+      }
+    }
+
+    @keyframes tick-pulse {
+      0%, 100% {
+        opacity: 0.48;
+      }
+
+      50% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes signal-pop {
+      0% {
+        transform: scale(0.8);
+      }
+
+      45% {
+        transform: scale(1.35);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .hero {
+        min-height: auto;
+      }
+
+      .draft-header {
+        align-items: flex-start;
+      }
+
+      .revision-strip {
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        white-space: normal;
+        text-align: right;
+      }
+
+      .revision-strip span + span {
+        border-left: 0;
+        padding-left: 0;
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding-top: 42px;
+      }
+
+      h1 {
+        max-width: 10ch;
+      }
+
+      .schematic-wrap {
+        min-height: clamp(360px, 58vw, 560px);
+        margin-top: -10px;
+      }
+
+      .support-cluster {
+        grid-template-columns: 1fr;
+      }
+
+      .industrial-note {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero {
+        padding-inline: 16px;
+      }
+
+      .brand-lockup {
+        grid-template-columns: 28px auto;
+        gap: 9px;
+      }
+
+      .brand-mark {
+        width: 28px;
+        height: 28px;
+      }
+
+      .draft-header {
+        display: grid;
+        gap: 12px;
+      }
+
+      .revision-strip {
+        justify-content: flex-start;
+        text-align: left;
+        gap: 8px 16px;
+        font-size: 0.64rem;
+      }
+
+      .hero-grid {
+        gap: 4px;
+        padding-top: 26px;
+      }
+
+      .sheet-index {
+        margin-bottom: 15px;
+      }
+
+      .sheet-index::before,
+      .sheet-index::after {
+        width: 20px;
+      }
+
+      h1 {
+        font-size: clamp(2.7rem, 13.5vw, 3.55rem);
+        line-height: 0.88;
+      }
+
+      .hero-copy p {
+        margin-top: 18px;
+        font-size: 0.98rem;
+        line-height: 1.48;
+      }
+
+      .cta-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 22px;
+      }
+
+      .cta {
+        min-height: 44px;
+        width: 100%;
+      }
+
+      .calibration-result {
+        margin-top: 12px;
+        font-size: 0.72rem;
+        line-height: 1.35;
+      }
+
+      .schematic-wrap {
+        min-height: 214px;
+        margin-top: 2px;
+        overflow: hidden;
+      }
+
+      .blueprint-svg {
+        width: 110%;
+        height: 230px;
+        min-height: 0;
+        transform: translateX(-5%);
+      }
+
+      .support-item {
+        min-height: 102px;
+      }
+
+      .section-band {
+        padding-inline: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-shell">
+    <span class="blueprint-corner corner-tl" aria-hidden="true"></span>
+    <span class="blueprint-corner corner-br" aria-hidden="true"></span>
+
+    <section class="hero" aria-labelledby="page-title">
+      <header class="draft-header" aria-label="Blueprint sheet information">
+        <div class="brand-lockup">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>Coffee Optimization Unit</span>
+        </div>
+        <div class="revision-strip" role="group" aria-label="Drawing metadata">
+          <span>Sheet C-07</span>
+          <span>Revision 04</span>
+          <span>Productivity Dose Draft</span>
+        </div>
+      </header>
+
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <span class="sheet-index">Caffeine calibration array</span>
+          <h1 id="page-title">Engineer the <span class="outline">exact</span> dose</h1>
+          <p>The Coffee Optimization Unit plots brew strength, focus window, tolerance drift, and meeting density into one mock industrial caffeine dose.</p>
+          <div class="cta-row" role="group" aria-label="Primary actions">
+            <button class="cta cta-primary" type="button" id="calibrateButton">Run dose calibration</button>
+            <button class="cta cta-secondary" type="button" id="labelButton" aria-pressed="false">Reduce component labels</button>
+          </div>
+          <p class="calibration-result" id="calibrationResult" aria-live="polite">Awaiting manual calibration input</p>
+        </div>
+
+        <figure class="schematic-wrap" id="schematicWrap" aria-label="Blueprint schematic of the caffeine dose system">
+          <svg class="blueprint-svg" viewBox="0 0 760 610" role="img" aria-labelledby="schematicTitle schematicDesc">
+            <title id="schematicTitle">Coffee Optimization Unit schematic</title>
+            <desc id="schematicDesc">A blueprint line drawing of a caffeine calibration apparatus with reservoir, dose chamber, focus gauge, timing rail, and labeled measurement paths.</desc>
+
+            <defs>
+              <pattern id="microGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                <path d="M 20 0 L 0 0 0 20" class="bp-line dim"></path>
+              </pattern>
+              <filter id="blueGlow">
+                <feGaussianBlur stdDeviation="2.2" result="blur"></feGaussianBlur>
+                <feMerge>
+                  <feMergeNode in="blur"></feMergeNode>
+                  <feMergeNode in="SourceGraphic"></feMergeNode>
+                </feMerge>
+              </filter>
+            </defs>
+
+            <rect x="36" y="34" width="688" height="532" class="bp-line dim"></rect>
+            <rect x="54" y="52" width="652" height="496" fill="url(#microGrid)" opacity="0.28"></rect>
+            <path d="M54 118H706M54 488H706M126 52V548M636 52V548" class="bp-line dim"></path>
+            <path d="M78 86H236M78 96H210M78 106H188" class="bp-line dim"></path>
+            <text x="79" y="75" class="bp-text dim">COU / schematic dose assembly</text>
+
+            <g aria-label="Coffee reservoir">
+              <path d="M166 150H346L324 278H188Z" class="bp-fill"></path>
+              <path d="M184 174H328M190 208H322M196 242H316" class="bp-line dim"></path>
+              <path d="M346 178H382C405 178 405 237 382 237H337" class="bp-line"></path>
+              <path d="M205 132H307M220 118H292" class="bp-line"></path>
+              <text x="182" y="306" class="bp-text">Reservoir A: brew input</text>
+              <path d="M190 292H170V330H236" class="bp-line dim"></path>
+            </g>
+
+            <g aria-label="Pipe manifold">
+              <path d="M256 278V342H390" class="bp-line cyan flow-path"></path>
+              <path d="M256 342H190V404" class="bp-line dim"></path>
+              <path d="M390 342H466" class="bp-line cyan flow-path"></path>
+              <circle cx="256" cy="342" r="10" class="bp-line cyan"></circle>
+              <circle cx="390" cy="342" r="10" class="bp-line cyan"></circle>
+              <circle cx="466" cy="342" r="6" class="signal-dot"></circle>
+              <text x="274" y="327" class="bp-text dim">flow path</text>
+            </g>
+
+            <g aria-label="Dose chamber" filter="url(#blueGlow)">
+              <rect x="466" y="222" width="122" height="178" class="bp-fill"></rect>
+              <path d="M486 246H568M486 278H568M486 310H568M486 342H568M486 374H568" class="bp-line dim"></path>
+              <rect x="487" y="319" width="80" height="54" class="dose-liquid"></rect>
+              <text x="480" y="211" class="bp-text">Dose chamber B</text>
+              <text x="496" y="438" class="bp-text amber" id="svgDose">142 mg</text>
+              <path d="M588 255H638V223H666" class="bp-line dim"></path>
+              <text x="612" y="216" class="bp-text dim">mg index</text>
+            </g>
+
+            <g aria-label="Focus gauge">
+              <circle cx="560" cy="420" r="96" class="bp-line"></circle>
+              <circle cx="560" cy="420" r="70" class="bp-line dim"></circle>
+              <path d="M493 487A95 95 0 0 1 627 353" class="bp-line cyan tick-orbit"></path>
+              <path d="M560 420L560 350" class="bp-line amber gauge-needle" id="gaugeNeedle"></path>
+              <circle cx="560" cy="420" r="7" class="bp-fill"></circle>
+              <path d="M494 420H474M646 420H626M560 334V314M516 348L505 329M604 348L615 329" class="bp-line dim"></path>
+              <text x="510" y="520" class="bp-text">Focus gauge</text>
+            </g>
+
+            <g aria-label="Timing rail">
+              <path d="M132 405H326" class="bp-line"></path>
+              <path d="M142 390V420M170 390V420M198 390V420M226 390V420M254 390V420M282 390V420M310 390V420" class="bp-line dim"></path>
+              <path d="M151 450H314M151 462H284" class="bp-line dim"></path>
+              <text x="150" y="480" class="bp-text">Timing rail C</text>
+              <circle cx="190" cy="405" r="9" class="bp-line amber"></circle>
+              <circle cx="282" cy="405" r="9" class="bp-line cyan"></circle>
+            </g>
+
+            <g aria-label="Dimension guides">
+              <path d="M145 126V283M137 126H154M137 283H154" class="bp-line dim"></path>
+              <text x="98" y="207" class="bp-text dim" transform="rotate(-90 98 207)">brew height</text>
+              <path d="M452 206H603M452 198V214M603 198V214" class="bp-line dim"></path>
+              <text x="478" y="190" class="bp-text dim">dose tolerance</text>
+              <path d="M650 330L697 330L697 390" class="bp-line dim"></path>
+              <text x="640" y="318" class="bp-text dim">output</text>
+            </g>
+          </svg>
+        </figure>
+      </div>
+
+      <ul class="support-cluster">
+        <li class="support-item">
+          <svg class="mini-symbol" viewBox="0 0 44 18" aria-hidden="true">
+            <path d="M1 9H18M18 9C18 2 27 2 27 9S36 16 36 9H43" fill="none" stroke="currentColor"></path>
+          </svg>
+          <b>Focus-first calibration</b>
+          <p>Maps caffeine to the task window instead of the mug size.</p>
+        </li>
+        <li class="support-item">
+          <svg class="mini-symbol" viewBox="0 0 44 18" aria-hidden="true">
+            <path d="M4 15V3H31V15ZM31 7H39C43 7 43 12 39 12H31" fill="none" stroke="currentColor"></path>
+          </svg>
+          <b>Brew-aware routing</b>
+          <p>Sketches roast strength, pacing, and tolerance as one circuit.</p>
+        </li>
+        <li class="support-item">
+          <svg class="mini-symbol" viewBox="0 0 44 18" aria-hidden="true">
+            <path d="M2 14H42M8 14V5M18 14V1M28 14V7M38 14V3" fill="none" stroke="currentColor"></path>
+          </svg>
+          <b>Crash containment</b>
+          <p>Flags late-day dose paths before they invade sleep territory.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section class="section-band" aria-label="System note">
+      <div class="industrial-note">
+        <h2>Built like a dosing diagram, calibrated like a joke.</h2>
+        <p>No medical claims, no real productivity science, and no borrowed proof. Just a precise fake machine for people who treat coffee like infrastructure.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const calibrateButton = document.querySelector("#calibrateButton");
+    const labelButton = document.querySelector("#labelButton");
+    const hero = document.querySelector(".hero");
+    const schematicWrap = document.querySelector("#schematicWrap");
+    const calibrationResult = document.querySelector("#calibrationResult");
+    const svgDose = document.querySelector("#svgDose");
+    const gaugeNeedle = document.querySelector("#gaugeNeedle");
+
+    const calibrations = [
+      { dose: 118, angle: -33, text: "Calibration complete: 118 mg for deep work until 11:40" },
+      { dose: 142, angle: -12, text: "Calibration complete: 142 mg for build mode with low meeting drag" },
+      { dose: 176, angle: 18, text: "Calibration complete: 176 mg for deadline compression" },
+      { dose: 96, angle: -48, text: "Calibration complete: 96 mg for careful edits and intact sleep" },
+      { dose: 154, angle: 6, text: "Calibration complete: 154 mg for afternoon recovery without chaos" }
+    ];
+
+    let calibrationIndex = 0;
+
+    calibrateButton.addEventListener("click", () => {
+      calibrationIndex = (calibrationIndex + 1) % calibrations.length;
+      const calibration = calibrations[calibrationIndex];
+
+      svgDose.textContent = `${calibration.dose} mg`;
+      gaugeNeedle.style.transform = `rotate(${calibration.angle}deg)`;
+      calibrationResult.textContent = calibration.text;
+
+      hero.classList.remove("calibrating");
+      window.requestAnimationFrame(() => {
+        hero.classList.add("calibrating");
+        window.setTimeout(() => hero.classList.remove("calibrating"), 620);
+      });
+    });
+
+    labelButton.addEventListener("click", () => {
+      const muted = schematicWrap.classList.toggle("labels-muted");
+      labelButton.setAttribute("aria-pressed", String(muted));
+      labelButton.textContent = muted ? "Restore component labels" : "Reduce component labels";
+    });
+  </script>
+</body>
+</html>
