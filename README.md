@@ -15,6 +15,7 @@ This package is a **local Codex plugin** that exposes one installable plugin wit
 | Stillwell Bottled Silence | [Preview](https://iamjimthefish.github.io/openui/examples/stillwell-bottled-silence/)   | Design a premium landing page for a startup that sells bottled silence. |
 | LTT Drop-Test Department | [Preview](https://iamjimthefish.github.io/openui/examples/ltt-drop-test-department/)    | Create a parody landing page about an AI code leak, but make it look like a real product launch, you can use imagengen if needed. |
 | Ship Happens             | [Preview](https://iamjimthefish.github.io/openui/examples/ship-happens-terminal-comic/) |Design a meme-worthy bug tracker for developers. |
+| Grand Line of the Stars  | [Preview](https://iamjimthefish.github.io/openui/examples/grand-line-of-the-stars/)     | [Prompt](examples/grand-line-of-the-stars/prompt.md) |
 
 ## Used in chatgpt.com web page, extended reasoning, all prompts are same just different topic/style input
 

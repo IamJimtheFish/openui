@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Grand Line of the Stars</title>
+  <meta name="description" content="A cinematic single-file game teaser with a Three.js glowing planet and GSAP scroll reveal.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%2303060d'/%3E%3Ccircle cx='32' cy='32' r='21' fill='%2372f2ff'/%3E%3Cpath d='M10 34c14-8 30-8 44 0' fill='none' stroke='%23f7c66a' stroke-width='5'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      color-scheme: dark;
+      --void: #03060d;
+      --deep: #07111f;
+      --ink: #091626;
+      --cyan: #72f2ff;
+      --cyan-soft: rgba(114, 242, 255, 0.68);
+      --amber: #f7c66a;
+      --red: #ff4c6f;
+      --text: #f3fbff;
+      --muted: #a9b6c8;
+      --line: rgba(189, 232, 255, 0.16);
+      --shadow: rgba(0, 0, 0, 0.5);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--void);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      overflow-x: hidden;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 50% 35%, rgba(36, 93, 126, 0.22), transparent 34rem),
+        linear-gradient(180deg, #02050c 0%, #07111f 56%, #0a0e16 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image:
+        radial-gradient(circle, rgba(255, 255, 255, 0.9) 0 1px, transparent 1.2px),
+        radial-gradient(circle, rgba(114, 242, 255, 0.65) 0 1px, transparent 1.3px);
+      background-size: 9.5rem 9.5rem, 14rem 14rem;
+      background-position: 0.7rem 1.1rem, 4.3rem 6rem;
+      opacity: 0.18;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .skip-link {
+      position: fixed;
+      left: 1rem;
+      top: 1rem;
+      z-index: 10;
+      transform: translateY(-150%);
+      border: 1px solid var(--cyan);
+      background: #02050c;
+      padding: 0.75rem 1rem;
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .page-shell {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 230vh;
+      isolation: isolate;
+    }
+
+    .hero-stage {
+      position: sticky;
+      top: 0;
+      display: grid;
+      min-height: 100vh;
+      overflow: hidden;
+      place-items: center;
+      padding: 2rem;
+      background:
+        linear-gradient(rgba(114, 242, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(114, 242, 255, 0.035) 1px, transparent 1px);
+      background-size: 4rem 4rem;
+    }
+
+    .hero-stage::before,
+    .hero-stage::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .hero-stage::before {
+      z-index: 1;
+      background:
+        linear-gradient(90deg, rgba(247, 198, 106, 0), rgba(247, 198, 106, 0.12), rgba(247, 198, 106, 0)) 50% 50% / 82% 1px no-repeat,
+        linear-gradient(180deg, rgba(114, 242, 255, 0), rgba(114, 242, 255, 0.14), rgba(114, 242, 255, 0)) 50% 50% / 1px 82% no-repeat;
+      opacity: 0.62;
+    }
+
+    .hero-stage::after {
+      z-index: 4;
+      background:
+        radial-gradient(circle at 50% 50%, transparent 0 20rem, rgba(3, 6, 13, 0.14) 33rem, rgba(3, 6, 13, 0.82) 100%),
+        linear-gradient(180deg, rgba(3, 6, 13, 0) 0%, rgba(3, 6, 13, 0.88) 100%);
+    }
+
+    .canvas-wrap {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      opacity: 1;
+      will-change: opacity, transform;
+    }
+
+    #planet-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .orbit-label {
+      position: absolute;
+      z-index: 3;
+      right: 2rem;
+      bottom: 2rem;
+      max-width: 16rem;
+      color: rgba(219, 244, 255, 0.72);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.75rem;
+      line-height: 1.55;
+      text-transform: uppercase;
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 5;
+      display: grid;
+      width: min(100%, 58rem);
+      justify-items: center;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(1rem);
+      will-change: opacity, transform;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      margin: 0 0 1.1rem;
+      color: var(--amber);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before,
+    .eyebrow::after {
+      content: "";
+      width: 1.7rem;
+      height: 1px;
+      background: currentColor;
+      opacity: 0.7;
+    }
+
+    h1 {
+      display: flex;
+      max-width: 51rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.1em 0.28em;
+      margin: 0;
+      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", system-ui, sans-serif;
+      font-size: 5.25rem;
+      font-weight: 900;
+      line-height: 0.92;
+      text-transform: uppercase;
+    }
+
+    .word {
+      display: inline-block;
+      overflow: hidden;
+      padding: 0.05em 0;
+    }
+
+    .word > span {
+      display: inline-block;
+      will-change: transform;
+    }
+
+    .word-accent > span {
+      color: transparent;
+      background: linear-gradient(90deg, var(--cyan), #ffffff 48%, var(--amber));
+      -webkit-background-clip: text;
+      background-clip: text;
+      text-shadow: 0 0 1.4rem rgba(114, 242, 255, 0.28);
+    }
+
+    .lede {
+      max-width: 42rem;
+      margin: 1.35rem 0 0;
+      color: #d8e6f4;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      text-shadow: 0 1rem 3rem var(--shadow);
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.85rem;
+      margin-top: 2rem;
+    }
+
+    .button {
+      display: inline-flex;
+      min-height: 3.35rem;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      padding: 0 1.25rem;
+      font-size: 0.88rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
+    }
+
+    .button:focus-visible {
+      outline: 3px solid rgba(247, 198, 106, 0.9);
+      outline-offset: 4px;
+    }
+
+    .button-primary {
+      border-color: rgba(114, 242, 255, 0.8);
+      color: #031018;
+      background: linear-gradient(90deg, var(--cyan), #f4fcff 48%, var(--amber));
+      box-shadow: 0 0 2rem rgba(114, 242, 255, 0.18);
+    }
+
+    .button-secondary {
+      color: var(--text);
+      background: rgba(8, 18, 31, 0.42);
+      backdrop-filter: blur(10px);
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+    }
+
+    .support {
+      position: relative;
+      z-index: 2;
+      padding: 5.5rem 2rem 6rem;
+      background:
+        linear-gradient(180deg, rgba(3, 6, 13, 0.25), #070a11 32%),
+        radial-gradient(circle at 50% 0%, rgba(247, 198, 106, 0.09), transparent 36rem);
+    }
+
+    .support-inner {
+      width: min(100%, 72rem);
+      margin: 0 auto;
+    }
+
+    .support-kicker {
+      margin: 0 0 1rem;
+      color: var(--cyan);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .support h2 {
+      max-width: 44rem;
+      margin: 0;
+      color: #eef9ff;
+      font-size: 2.1rem;
+      line-height: 1.08;
+    }
+
+    .support-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 2.2rem;
+    }
+
+    .support-card {
+      min-height: 13rem;
+      border: 1px solid rgba(189, 232, 255, 0.14);
+      border-radius: 8px;
+      background: linear-gradient(180deg, rgba(12, 28, 46, 0.78), rgba(7, 13, 22, 0.72));
+      padding: 1.25rem;
+    }
+
+    .mark {
+      display: inline-grid;
+      width: 2.3rem;
+      height: 2.3rem;
+      place-items: center;
+      border: 1px solid rgba(114, 242, 255, 0.34);
+      color: var(--amber);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-weight: 900;
+    }
+
+    .support-card h3 {
+      margin: 1.35rem 0 0.65rem;
+      color: #ffffff;
+      font-size: 1.02rem;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    .support-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 760px) {
+      .hero-stage {
+        padding: 1.1rem;
+      }
+
+      .orbit-label {
+        right: 1rem;
+        bottom: 1rem;
+        max-width: 12rem;
+        font-size: 0.68rem;
+      }
+
+      h1 {
+        max-width: 22rem;
+        font-size: 3.35rem;
+      }
+
+      .lede {
+        max-width: 21rem;
+        font-size: 0.98rem;
+        line-height: 1.62;
+      }
+
+      .button {
+        width: min(100%, 18rem);
+      }
+
+      .support {
+        padding: 4rem 1rem 4.5rem;
+      }
+
+      .support h2 {
+        font-size: 1.55rem;
+      }
+
+      .support-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 430px) {
+      h1 {
+        max-width: 19rem;
+        font-size: 2.85rem;
+      }
+
+      .eyebrow {
+        font-size: 0.68rem;
+      }
+
+      .eyebrow::before,
+      .eyebrow::after {
+        width: 0.95rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.001ms !important;
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+      }
+
+      .hero {
+        min-height: 100vh;
+      }
+
+      .hero-copy {
+        opacity: 1;
+        transform: none;
+      }
+
+      .word > span {
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#briefing">Skip to briefing</a>
+  <main class="page-shell">
+    <section class="hero" aria-label="Grand Line of the Stars hero">
+      <div class="hero-stage">
+        <div class="canvas-wrap" aria-hidden="true">
+          <canvas id="planet-canvas"></canvas>
+        </div>
+        <p class="orbit-label">Nav relay: sea-prism moon<br>Course locked: outer grand line</p>
+        <div class="hero-copy">
+          <p class="eyebrow">Fan-made game teaser</p>
+          <h1 aria-label="Grand Line of the Stars">
+            <span class="word"><span>Grand</span></span>
+            <span class="word"><span>Line</span></span>
+            <span class="word"><span>of</span></span>
+            <span class="word word-accent"><span>the</span></span>
+            <span class="word word-accent"><span>Stars</span></span>
+          </h1>
+          <p class="lede">Command a rebel pirate crew across asteroid seas, plasma duels, and cursed relic islands in a browser-first adventure prototype.</p>
+          <div class="cta-row" aria-label="Primary actions">
+            <a class="button button-primary" href="#briefing">Explore the Teaser</a>
+            <a class="button button-secondary" href="#briefing">Open Crew Briefing</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="support" id="briefing" aria-labelledby="briefing-title">
+      <div class="support-inner">
+        <p class="support-kicker">Crew briefing</p>
+        <h2 id="briefing-title">A space-pirate campaign built around duels, maps, and impossible islands.</h2>
+        <div class="support-grid" aria-label="Game pillars">
+          <article class="support-card">
+            <span class="mark" aria-hidden="true">I</span>
+            <h3>Plasma Cutlass Combat</h3>
+            <p>Parry blaster fire, chain saber strikes, and break enemy guard with timing-driven special techniques.</p>
+          </article>
+          <article class="support-card">
+            <span class="mark" aria-hidden="true">II</span>
+            <h3>Asteroid Sea Routes</h3>
+            <p>Plot courses through gravity currents, hidden moons, and outlaw ports that shift between expeditions.</p>
+          </article>
+          <article class="support-card">
+            <span class="mark" aria-hidden="true">III</span>
+            <h3>Relic Powers</h3>
+            <p>Unlock strange fruit-like abilities from forbidden artifacts and fuse them with ship upgrades.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+    (() => {
+      const canvas = document.querySelector("#planet-canvas");
+      const canvasWrap = document.querySelector(".canvas-wrap");
+      const heroCopy = document.querySelector(".hero-copy");
+      const words = gsap.utils.toArray(".word > span");
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (!window.THREE || !window.gsap || !canvas) {
+        heroCopy.style.opacity = "1";
+        heroCopy.style.transform = "none";
+        words.forEach((word) => {
+          word.style.transform = "none";
+        });
+        return;
+      }
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: "high-performance"
+      });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
+      camera.position.set(0, 0, 7.2);
+
+      const planetGroup = new THREE.Group();
+      scene.add(planetGroup);
+
+      const planetUniforms = {
+        uTime: { value: 0 },
+        uScroll: { value: 0 },
+        uCyan: { value: new THREE.Color("#72f2ff") },
+        uAmber: { value: new THREE.Color("#f7c66a") },
+        uRed: { value: new THREE.Color("#ff4c6f") },
+        uDeep: { value: new THREE.Color("#061427") }
+      };
+
+      const vertexShader = `
+        varying vec2 vUv;
+        varying vec3 vNormal;
+        varying vec3 vWorldPosition;
+
+        void main() {
+          vUv = uv;
+          vNormal = normalize(normalMatrix * normal);
+          vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+          vWorldPosition = worldPosition.xyz;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `;
+
+      const fragmentShader = `
+        precision highp float;
+
+        uniform float uTime;
+        uniform float uScroll;
+        uniform vec3 uCyan;
+        uniform vec3 uAmber;
+        uniform vec3 uRed;
+        uniform vec3 uDeep;
+
+        varying vec2 vUv;
+        varying vec3 vNormal;
+        varying vec3 vWorldPosition;
+
+        float hash(vec3 p) {
+          p = fract(p * 0.3183099 + 0.1);
+          p *= 17.0;
+          return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+        }
+
+        float noise(vec3 x) {
+          vec3 i = floor(x);
+          vec3 f = fract(x);
+          f = f * f * (3.0 - 2.0 * f);
+
+          return mix(
+            mix(
+              mix(hash(i + vec3(0.0, 0.0, 0.0)), hash(i + vec3(1.0, 0.0, 0.0)), f.x),
+              mix(hash(i + vec3(0.0, 1.0, 0.0)), hash(i + vec3(1.0, 1.0, 0.0)), f.x),
+              f.y
+            ),
+            mix(
+              mix(hash(i + vec3(0.0, 0.0, 1.0)), hash(i + vec3(1.0, 0.0, 1.0)), f.x),
+              mix(hash(i + vec3(0.0, 1.0, 1.0)), hash(i + vec3(1.0, 1.0, 1.0)), f.x),
+              f.y
+            ),
+            f.z
+          );
+        }
+
+        float fbm(vec3 p) {
+          float value = 0.0;
+          float amp = 0.5;
+          for (int i = 0; i < 5; i++) {
+            value += amp * noise(p);
+            p *= 2.04;
+            amp *= 0.5;
+          }
+          return value;
+        }
+
+        void main() {
+          vec3 normal = normalize(vNormal);
+          vec3 viewDir = normalize(cameraPosition - vWorldPosition);
+          float rim = pow(1.0 - max(dot(normal, viewDir), 0.0), 2.0);
+
+          vec3 p = normalize(vWorldPosition) * 2.2;
+          float mapNoise = fbm(p + vec3(uTime * 0.03, 0.0, uTime * 0.02));
+          float coast = smoothstep(0.45, 0.62, mapNoise) - smoothstep(0.65, 0.78, mapNoise);
+          float land = smoothstep(0.56, 0.78, mapNoise);
+
+          float latitude = abs(sin((vUv.y + 0.05 * sin(uTime * 0.2)) * 38.0));
+          float band = smoothstep(0.94, 1.0, latitude) * (0.45 + 0.55 * noise(vec3(vUv * 9.0, uTime * 0.08)));
+
+          float route = smoothstep(0.03, 0.0, abs(sin((vUv.x * 9.0 + vUv.y * 5.0 + uTime * 0.12) * 3.14159)));
+          route *= smoothstep(0.35, 0.72, noise(vec3(vUv * 5.0, 1.0)));
+
+          vec3 ocean = mix(uDeep, vec3(0.02, 0.22, 0.35), mapNoise);
+          vec3 chart = mix(ocean, uAmber, land * 0.62);
+          chart = mix(chart, uCyan, coast * 0.78);
+          chart += uCyan * band * 0.34;
+          chart += uRed * route * 0.32;
+          chart += uCyan * rim * (1.0 + uScroll * 0.65);
+          chart += vec3(1.0, 0.92, 0.68) * pow(rim, 3.0) * 0.8;
+
+          float nightSide = smoothstep(-0.62, 0.76, dot(normal, normalize(vec3(-0.45, 0.28, 0.84))));
+          chart *= 0.35 + nightSide * 0.95;
+
+          float alpha = 0.94 + rim * 0.06;
+          gl_FragColor = vec4(chart, alpha);
+        }
+      `;
+
+      const planet = new THREE.Mesh(
+        new THREE.SphereGeometry(2.05, 160, 160),
+        new THREE.ShaderMaterial({
+          uniforms: planetUniforms,
+          vertexShader,
+          fragmentShader,
+          transparent: true
+        })
+      );
+      planetGroup.add(planet);
+
+      const glow = new THREE.Mesh(
+        new THREE.SphereGeometry(2.18, 128, 128),
+        new THREE.ShaderMaterial({
+          uniforms: {
+            uColor: { value: new THREE.Color("#72f2ff") },
+            uTime: planetUniforms.uTime
+          },
+          vertexShader: `
+            varying vec3 vNormal;
+            varying vec3 vWorldPosition;
+            void main() {
+              vNormal = normalize(normalMatrix * normal);
+              vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+              vWorldPosition = worldPosition.xyz;
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+          `,
+          fragmentShader: `
+            precision highp float;
+            uniform vec3 uColor;
+            uniform float uTime;
+            varying vec3 vNormal;
+            varying vec3 vWorldPosition;
+            void main() {
+              vec3 viewDir = normalize(cameraPosition - vWorldPosition);
+              float rim = pow(1.0 - max(dot(normalize(vNormal), viewDir), 0.0), 2.4);
+              float pulse = 0.76 + 0.24 * sin(uTime * 1.4);
+              gl_FragColor = vec4(uColor, rim * 0.48 * pulse);
+            }
+          `,
+          side: THREE.BackSide,
+          transparent: true,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false
+        })
+      );
+      planetGroup.add(glow);
+
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(2.62, 0.012, 12, 220),
+        new THREE.MeshBasicMaterial({
+          color: "#f7c66a",
+          transparent: true,
+          opacity: 0.42,
+          blending: THREE.AdditiveBlending
+        })
+      );
+      ring.rotation.set(1.25, 0.18, -0.28);
+      planetGroup.add(ring);
+
+      const stars = new THREE.BufferGeometry();
+      const starCount = 900;
+      const positions = new Float32Array(starCount * 3);
+      for (let i = 0; i < starCount; i++) {
+        const radius = 10 + Math.random() * 20;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+        positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+        positions[i * 3 + 2] = radius * Math.cos(phi) - 4;
+      }
+      stars.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+      scene.add(new THREE.Points(
+        stars,
+        new THREE.PointsMaterial({
+          color: "#dff8ff",
+          size: 0.025,
+          transparent: true,
+          opacity: 0.7
+        })
+      ));
+
+      function resize() {
+        const width = canvasWrap.clientWidth;
+        const height = canvasWrap.clientHeight;
+        renderer.setSize(width, height, false);
+        camera.aspect = width / Math.max(height, 1);
+        camera.updateProjectionMatrix();
+        const mobile = width < 700;
+        planetGroup.position.y = mobile ? 0.05 : -0.05;
+        planetGroup.scale.setScalar(mobile ? 0.8 : 1);
+      }
+
+      const clock = new THREE.Clock();
+
+      function render() {
+        const elapsed = clock.getElapsedTime();
+        planetUniforms.uTime.value = elapsed;
+        if (!reduceMotion) {
+          planet.rotation.y = elapsed * 0.115;
+          glow.rotation.y = elapsed * 0.115;
+          ring.rotation.z = -0.28 + Math.sin(elapsed * 0.18) * 0.025;
+        }
+        renderer.render(scene, camera);
+        requestAnimationFrame(render);
+      }
+
+      resize();
+      render();
+      window.addEventListener("resize", resize);
+
+      if (reduceMotion) {
+        heroCopy.style.opacity = "1";
+        heroCopy.style.transform = "none";
+        words.forEach((word) => {
+          word.style.transform = "none";
+        });
+        return;
+      }
+
+      gsap.set(heroCopy, { autoAlpha: 0, y: 18 });
+      gsap.set(words, { yPercent: 115 });
+
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".hero",
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.75
+        }
+      });
+
+      timeline
+        .to(planetGroup.scale, {
+          x: 0.46,
+          y: 0.46,
+          z: 0.46,
+          ease: "power2.inOut",
+          duration: 0.46
+        }, 0)
+        .to(canvasWrap, {
+          autoAlpha: 0.18,
+          filter: "blur(1px)",
+          ease: "power2.inOut",
+          duration: 0.52
+        }, 0)
+        .to(planetUniforms.uScroll, {
+          value: 1,
+          ease: "none",
+          duration: 0.5
+        }, 0)
+        .to(heroCopy, {
+          autoAlpha: 1,
+          y: 0,
+          ease: "power3.out",
+          duration: 0.28
+        }, 0.28)
+        .to(words, {
+          yPercent: 0,
+          stagger: 0.055,
+          ease: "power4.out",
+          duration: 0.38
+        }, 0.34);
+    })();
+  </script>
+</body>
+</html>
