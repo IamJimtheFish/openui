@@ -6,8 +6,6 @@ This package is a **local Codex plugin** that exposes one installable plugin wit
 
 ## Live examples
 
-Open the [examples gallery](https://iamjimthefish.github.io/openui/) or preview individual examples:
-
 ## Inside codex app - Model codex-5.4 high
 
 | Example                  | Preview                                                                                                                | Prompt or design source                                  |
@@ -27,6 +25,8 @@ Open the [examples gallery](https://iamjimthefish.github.io/openui/) or preview 
 | Tiny Truce Club      | [Preview](https://iamjimthefish.github.io/openui/examples/tiny-truce-club/)    | [Prompt](examples/tiny-truce-club/prompt.md)    |
 | Theo Clears the Feed | [Preview](https://iamjimthefish.github.io/openui/examples/theo-clears-feed/)   | No prompt included                              |
 | Theo t3.gg           | [Preview](https://iamjimthefish.github.io/openui/examples/theo-t3gg/)          | No prompt included                              |
+
+Open the [examples gallery](https://iamjimthefish.github.io/openui/) or preview individual examples:
 
 Playwright can help a lot for visual QA: use it to open every generated route, capture desktop and mobile screenshots, check console errors, and catch overflow or overlap before calling a page done.
 
