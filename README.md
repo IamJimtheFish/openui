@@ -6,7 +6,7 @@ This package is a **local Codex plugin** that exposes one installable plugin wit
 
 ## Live examples
 
-> I intentionally kept the previews as real one-shot outputs rather than polished, hand-picked examples. I could have run more iterations, fixed small issues, and selected only the cleanest results, but that would not reflect the actual behavior honestly. These previews are meant to show what the project produces in a realistic first pass, not a fake-perfect final result.
+I intentionally kept the previews as real one-shot outputs rather than polished, hand-picked examples. I could have run more iterations, fixed small issues, and selected only the cleanest results, but that would not reflect the actual behavior honestly. These previews are meant to show what the project produces in a realistic first pass, not a fake-perfect final result.
 
 Better results are still possible by steering the model more directly in the prompt, for example by specifying style, composition, mood, constraints, or other concrete visual ideas.
 
